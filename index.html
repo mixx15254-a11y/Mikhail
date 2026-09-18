@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расписание Матчей — 5 Лиг</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=JetBrains+Mono:wght@500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{font-family:'Inter',system-ui,sans-serif}
+h1,h2{font-family:'Manrope',sans-serif}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+::-webkit-scrollbar-track{background:transparent}
+</style>
+<script>
+tailwind.config={
+  theme:{
+    extend:{
+      colors:{
+        ink:'#0f172a',
+        brand:'#16a34a',
+        brand2:'#15803d',
+        muted:'#64748b'
+      }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-[#f8fafc] text-ink min-h-screen">
+<!-- TOP BAR -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200">
+  <div class="max-w-[1280px] mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-700 flex items-center justify-center text-white font-black text-[18px]">⚽</div>
+      <div>
+        <h1 class="text-[18px] sm:text-[20px] font-extrabold leading-none tracking-tight">МИХАИЛ • ЛИГИ</h1>
+        <p class="text-[11px] tracking-[0.14em] text-slate-500 font-semibold">РАСПИСАНИЕ МАТЧЕЙ — 5 ЛИГ</p>
+      </div>
+    </div>
+    <div class="hidden md:flex items-center gap-2 ml-auto">
+      <span class="text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">Сезон 2025/26</span>
+      <span id="totalMatchesBadge" class="text-xs font-bold bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full">0 матчей</span>
+    </div>
+    <div class="flex items-center gap-2 ml-auto md:ml-4">
+      <button onclick="exportJSON()" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold bg-white border border-slate-200 px-4 py-2 rounded-xl hover:bg-slate-50">⬇ Экспорт JSON</button>
+      <button onclick="exportCSV()" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold bg-white border border-slate-200 px-4 py-2 rounded-xl hover:bg-slate-50">CSV</button>
+      <button onclick="window.print()" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold bg-white border border-slate-200 px-4 py-2 rounded-xl hover:bg-slate-50">🖨 Печать</button>
+      <button onclick="resetAll()" class="inline-flex items-center gap-2 text-sm font-semibold bg-slate-900 text-white px-4 py-2 rounded-xl hover:bg-black">↺ Сброс</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1280px] mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-[310px_1fr] gap-6">
+  <!-- LEFT: ЛИГИ -->
+  <div class="space-y-4">
+    <div class="bg-white rounded-[20px] border border-slate-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-extrabold text-[13px] tracking-[0.12em] text-slate-600">ЛИГИ • 5</h2>
+        <span class="text-[11px] text-slate-400">нажми чтобы переключить</span>
+      </div>
+      <div id="leagueList" class="space-y-2"></div>
+      <div class="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+        <p class="text-xs font-semibold text-emerald-800">💡 Подсказка</p>
+        <p class="text-xs text-emerald-700/80 leading-relaxed mt-1">Добавь команды в каждой лиге и нажми «Сгенерировать расписание». Система сделает круговую систему без повторов, с чередованием дома/в гостях.</p>
+      </div>
+    </div>
+
+    <div class="bg-slate-900 rounded-[20px] p-5 text-white">
+      <h3 class="font-bold">Быстрый старт</h3>
+      <ol class="mt-3 space-y-2 text-sm text-slate-300">
+        <li><span class="inline-flex w-6 h-6 rounded-full bg-white/15 items-center justify-center text-xs font-bold mr-2">1</span>Переименуй лиги под свой турнир</li>
+        <li><span class="inline-flex w-6 h-6 rounded-full bg-white/15 items-center justify-center text-xs font-bold mr-2">2</span>Добавь от 4 до 20 команд</li>
+        <li><span class="inline-flex w-6 h-6 rounded-full bg-white/15 items-center justify-center text-xs font-bold mr-2">3</span>Выбери формат и дату старта</li>
+        <li><span class="inline-flex w-6 h-6 rounded-full bg-white/15 items-center justify-center text-xs font-bold mr-2">4</span>Сгенерируй и редактируй матчи</li>
+      </ol>
+      <button onclick="generateAllDemo()" class="mt-4 w-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2.5 rounded-xl">✨ Заполнить демо-данными</button>
+      <button onclick="generateAllLeagues()" class="mt-2 w-full bg-white/10 hover:bg-white/20 font-semibold py-2.5 rounded-xl">⚡ Сгенерировать все 5 лиг</button>
+    </div>
+
+    <div class="bg-white rounded-[20px] border border-slate-200 p-4">
+      <h3 class="font-bold text-sm">Календарь ближайших игр</h3>
+      <div id="upcomingList" class="mt-3 space-y-2 max-h-[320px] overflow-auto pr-1"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: ДЕТАЛИ ЛИГИ -->
+  <div class="space-y-6">
+    <!-- League header card -->
+    <div class="bg-white rounded-[24px] border border-slate-200 overflow-hidden">
+      <div id="leagueHeader" class="p-6 sm:p-7 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
+        <!-- decorative -->
+        <div class="absolute -right-10 -top-10 w-48 h-48 bg-emerald-500/20 rounded-full blur-2xl"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-xl"></div>
+        <div class="relative">
+          <div class="flex flex-wrap items-start justify-between gap-4">
+            <div class="flex-1 min-w-[240px]">
+              <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur px-3 py-1 rounded-full text-xs font-bold tracking-widest">ЛИГА <span id="headerLeagueNumber">1</span> • <span id="headerTeamsCount">0 команд</span></div>
+              <input id="leagueNameInput" class="mt-3 bg-transparent text-[26px] sm:text-[30px] font-extrabold w-full outline-none border-b border-white/10 focus:border-emerald-400 pb-1 placeholder:text-white/40" placeholder="Название лиги"/>
+              <div class="mt-3 flex flex-wrap gap-2 text-xs">
+                <span id="headerMetaA" class="bg-white text-slate-900 px-3 py-1.5 rounded-full font-bold">0 туров</span>
+                <span id="headerMetaB" class="bg-emerald-500 text-white px-3 py-1.5 rounded-full font-bold">0 матчей</span>
+                <span id="headerMetaC" class="bg-white/10 border border-white/15 px-3 py-1.5 rounded-full font-semibold">Круговая система</span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2 sm:items-end">
+              <label class="text-[11px] tracking-widest font-bold text-white/60">СТАТУС ЛИГИ</label>
+              <select id="leagueStatus" class="bg-white text-slate-900 font-bold rounded-xl px-4 py-2.5 text-sm outline-none">
+                <option value="draft">Черновик</option>
+                <option value="active">Идёт сезон</option>
+                <option value="finished">Завершена</option>
+              </select>
+              <label class="flex items-center gap-2 text-sm mt-1 cursor-pointer"><input id="doubleRoundCheck" type="checkbox" class="w-4 h-4 accent-emerald-500"> Двойной круг (дома/в гостях)</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 sm:p-7 space-y-6">
+        <!-- Teams editor -->
+        <div>
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-[13px] tracking-[0.12em] text-slate-600">КОМАНДЫ</h3>
+            <span id="teamsCounter" class="text-xs font-bold bg-slate-100 px-3 py-1 rounded-full">0</span>
+          </div>
+          <div id="teamsGrid" class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+          <div class="mt-3 flex gap-2">
+            <input id="newTeamInput" placeholder="Добавить команду... напр. Зенит" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-emerald-400 focus:bg-white"/>
+            <button onclick="addTeam()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 rounded-xl">+ Добавить</button>
+          </div>
+          <div class="mt-2 flex flex-wrap gap-2">
+            <button onclick="addTeamsBulk()" class="text-xs font-semibold bg-slate-900 text-white px-3 py-2 rounded-full">+ Добавить пачку (8 команд)</button>
+            <button onclick="clearTeams()" class="text-xs font-semibold bg-white border border-slate-200 px-3 py-2 rounded-full">Очистить список</button>
+            <button onclick="shuffleTeams()" class="text-xs font-semibold bg-white border border-slate-200 px-3 py-2 rounded-full">🔀 Перемешать</button>
+          </div>
+        </div>
+
+        <!-- Generation controls -->
+        <div class="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-4 bg-slate-50 border border-slate-200 rounded-2xl p-4">
+          <div class="space-y-3">
+            <h4 class="font-bold text-sm">Генерация расписания</h4>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="space-y-1">
+                <span class="text-xs font-semibold text-slate-500">Дата старта</span>
+                <input id="startDate" type="date" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500"/>
+              </label>
+              <label class="space-y-1">
+                <span class="text-xs font-semibold text-slate-500">Время матча</span>
+                <input id="startTime" type="time" value="18:00" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500"/>
+              </label>
+              <label class="space-y-1">
+                <span class="text-xs font-semibold text-slate-500">Интервал между турами</span>
+                <select id="interval" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none">
+                  <option value="7">Каждые 7 дней</option>
+                  <option value="3">Каждые 3 дня</option>
+                  <option value="14">Каждые 14 дней</option>
+                  <option value="1">Каждый день</option>
+                </select>
+              </label>
+              <label class="space-y-1">
+                <span class="text-xs font-semibold text-slate-500">Стадион по умолчанию</span>
+                <input id="defaultStadium" placeholder="Главная арена" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:border-emerald-500"/>
+              </label>
+            </div>
+          </div>
+          <div class="flex flex-col justify-end gap-2">
+            <button onclick="generateSchedule()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-xl text-[15px] shadow-lg shadow-emerald-600/20">⚡ Сгенерировать расписание</button>
+            <button onclick="clearSchedule()" class="w-full bg-white border border-slate-200 font-semibold py-2.5 rounded-xl hover:bg-slate-50">Очистить расписание</button>
+            <p class="text-[11px] text-slate-500 text-center">Круговая система • каждый с каждым • без повторов</p>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div id="scheduleToolbar" class="hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <button onclick="setView('tours')" id="btnTours" class="px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white">По турам</button>
+              <button onclick="setView('list')" id="btnList" class="px-4 py-2 rounded-xl font-bold text-sm bg-white border border-slate-200">Списком</button>
+              <button onclick="setView('table')" id="btnTable" class="px-4 py-2 rounded-xl font-bold text-sm bg-white border border-slate-200">Таблица</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <input id="searchInput" oninput="renderSchedule()" placeholder="Поиск: команда, стадион..." class="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm w-[220px] outline-none focus:border-emerald-500"/>
+              <select id="tourFilter" onchange="renderSchedule()" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none">
+                <option value="all">Все туры</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schedule container -->
+        <div id="scheduleContainer" class="space-y-4"></div>
+        <div id="emptyState" class="hidden text-center py-16 bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-xl">📅</div>
+          <p class="mt-3 font-bold">Расписание ещё не создано</p>
+          <p class="text-sm text-slate-500 max-w-[420px] mx-auto mt-1">Добавь минимум 4 команды и нажми «Сгенерировать расписание». Можно генерировать для каждой из 5 лиг отдельно.</p>
+        </div>
+
+        <!-- Standings -->
+        <div id="standingsBlock" class="hidden">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-[13px] tracking-[0.12em] text-slate-600">ТУРНИРНАЯ ТАБЛИЦА</h3>
+            <span class="text-xs text-slate-500">автоматически по счётам</span>
+          </div>
+          <div class="mt-3 overflow-auto rounded-xl border border-slate-200">
+            <table class="w-full text-sm">
+              <thead class="bg-slate-50 text-[11px] tracking-widest font-bold text-slate-500"><tr><th class="text-left px-4 py-3">#</th><th class="text-left px-2 py-3">Команда</th><th class="px-3 py-3">И</th><th class="px-3 py-3">В</th><th class="px-3 py-3">Н</th><th class="px-3 py-3">П</th><th class="px-3 py-3">ГЗ</th><th class="px-3 py-3">ГП</th><th class="px-3 py-3">О</th></tr></thead>
+              <tbody id="standingsBody" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center">🏟️</div>
+        <div><p class="font-bold text-sm">5 лиг параллельно</p><p class="text-xs text-slate-500">Каждая со своим расписанием</p></div>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">🔄</div>
+        <div><p class="font-bold text-sm">Авто-сохранение</p><p class="text-xs text-slate-500">Локально в браузере</p></div>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">📤</div>
+        <div><p class="font-bold text-sm">Экспорт</p><p class="text-xs text-slate-500">JSON / CSV / Печать</p></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL -->
+<div id="matchModal" class="fixed inset-0 hidden z-50">
+  <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeModal()"></div>
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="bg-white rounded-[20px] max-w-[560px] w-full p-6 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="font-extrabold text-lg">Редактировать матч</h3>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">✕</button>
+      </div>
+      <div id="modalContent" class="mt-4 space-y-4"></div>
+      <div class="mt-6 flex gap-2 justify-end">
+        <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl bg-white border border-slate-200 font-semibold">Отмена</button>
+        <button onclick="saveMatch()" class="px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold hover:bg-emerald-700">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-5 py-3 rounded-full text-sm font-semibold shadow-xl hidden z-50"></div>
+
+<script>
+const DEFAULT_LEAGUES = [
+  { id: 'l1', name: 'Премьер-лига', teams: ['Зенит', 'Спартак', 'ЦСКА', 'Краснодар', 'Динамо', 'Локомотив', 'Ростов', 'Сочи'], status:'active', doubleRound:true, matches:[] },
+  { id: 'l2', name: 'Первая лига', teams: ['Балтика', 'Торпедо', 'Урал', 'Рубин', 'Алания', 'СКА-Хабаровск', 'Енисей', 'Шинник'], status:'draft', doubleRound:true, matches:[] },
+  { id: 'l3', name: 'Вторая лига — Запад', teams: ['Текстильщик', 'Муром', 'Родина-2', 'Динамо-2', 'Чертаново', 'Строгино'], status:'draft', doubleRound:false, matches:[] },
+  { id: 'l4', name: 'Третья лига', teams: ['Амкал', '2DROTS', 'БроукБойз', 'Сахалинец', 'Квант', 'Коломна'], status:'draft', doubleRound:false, matches:[] },
+  { id: 'l5', name: 'Юношеская лига U-19', teams: ['Академия Зенита', 'Академия Спартака', 'Академия ЦСКА', 'Академия Краснодара', 'Чертаново U19', 'Локо U19'], status:'draft', doubleRound:true, matches:[] },
+];
+
+let leagues = load();
+let activeId = leagues[0].id;
+let view='tours';
+let editing = null;
+
+function load(){
+  try{
+    const raw = localStorage.getItem('mikhail_leagues_v1');
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  // deep clone
+  return JSON.parse(JSON.stringify(DEFAULT_LEAGUES));
+}
+function save(){ localStorage.setItem('mikhail_leagues_v1', JSON.stringify(leagues)); updateBadges(); }
+function getActive(){ return leagues.find(l=>l.id===activeId) }
+
+function updateBadges(){
+  const total = leagues.reduce((a,l)=>a+l.matches.length,0);
+  document.getElementById('totalMatchesBadge').textContent = total + ' матчей';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.remove('hidden');
+  setTimeout(()=>t.classList.add('hidden'),2400);
+}
+
+function renderLeaguesList(){
+  const el=document.getElementById('leagueList');
+  el.innerHTML='';
+  leagues.forEach((l,idx)=>{
+    const active = l.id===activeId;
+    const div=document.createElement('div');
+    div.className = active ? 'rounded-2xl p-3 border-2 border-emerald-500 bg-emerald-50 cursor-pointer' : 'rounded-2xl p-3 border border-slate-200 bg-white hover:border-slate-300 cursor-pointer';
+    div.onclick=()=>{ activeId=l.id; renderAll(); };
+    div.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl ${active?'bg-emerald-600 text-white':'bg-slate-900 text-white'} flex items-center justify-center font-black text-sm">${idx+1}</div>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-sm leading-none truncate">${escapeHtml(l.name)}</p>
+          <p class="text-xs text-slate-500 mt-1">${l.teams.length} команд • ${l.matches.length} матчей ${l.doubleRound?'• ×2 круг':''}</p>
+        </div>
+        <span class="text-[10px] font-bold tracking-widest px-2 py-1 rounded-full ${l.status==='active'?'bg-emerald-600 text-white':l.status==='finished'?'bg-slate-900 text-white':'bg-slate-100 text-slate-600'}">${l.status==='active'?'LIVE':l.status==='finished'?'FINISH':'DRAFT'}</span>
+      </div>
+    `;
+    el.appendChild(div);
+  });
+}
+
+function renderActive(){
+  const l=getActive();
+  document.getElementById('headerLeagueNumber').textContent = leagues.findIndex(x=>x.id===l.id)+1;
+  document.getElementById('headerTeamsCount').textContent = l.teams.length + ' команд';
+  const rounds = l.matches.length ? Math.max(...l.matches.map(m=>m.round)) : 0;
+  document.getElementById('headerMetaA').textContent = rounds ? rounds+' туров' : 'нет туров';
+  document.getElementById('headerMetaB').textContent = l.matches.length+' матчей';
+  const nameInput=document.getElementById('leagueNameInput');
+  nameInput.value=l.name;
+  nameInput.oninput=(e)=>{ l.name=e.target.value||'Лига'; renderLeaguesList(); save(); };
+  document.getElementById('leagueStatus').value=l.status;
+  document.getElementById('leagueStatus').onchange=(e)=>{ l.status=e.target.value; renderLeaguesList(); save(); };
+  document.getElementById('doubleRoundCheck').checked=l.doubleRound;
+  document.getElementById('doubleRoundCheck').onchange=(e)=>{ l.doubleRound=e.target.checked; renderLeaguesList(); save(); };
+
+  document.getElementById('teamsCounter').textContent=l.teams.length;
+  const grid=document.getElementById('teamsGrid');
+  grid.innerHTML='';
+  if(l.teams.length===0){
+    grid.innerHTML='<p class="col-span-2 text-sm text-slate-500 bg-amber-50 border border-amber-100 rounded-xl p-3">Пока нет команд. Добавь хотя бы 4.</p>';
+  } else {
+    l.teams.forEach((t,i)=>{
+      const d=document.createElement('div');
+      d.className='flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-2.5';
+      d.innerHTML=`<span class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold">${i+1}</span><input value="${escapeHtml(t)}" class="flex-1 text-sm font-semibold bg-transparent outline-none" onchange="renameTeam(${i}, this.value)" /><button onclick="removeTeam(${i})" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-red-50 hover:text-red-600 flex items-center justify-center text-xs">✕</button>`;
+      grid.appendChild(d);
+    });
+  }
+
+  // dates
+  if(!document.getElementById('startDate').value){
+    const d=new Date(); d.setDate(d.getDate()+7);
+    document.getElementById('startDate').valueAsDate=d;
+  }
+
+  renderSchedule();
+  renderUpcoming();
+  renderStandings();
+}
+
+function renameTeam(idx, val){ const l=getActive(); if(!val.trim()) return; l.teams[idx]=val.trim(); save(); renderLeaguesList(); }
+function removeTeam(idx){ const l=getActive(); l.teams.splice(idx,1); save(); renderAll(); showToast('Команда удалена'); }
+function addTeam(){
+  const input=document.getElementById('newTeamInput');
+  const val=input.value.trim();
+  if(!val) return showToast('Введи название команды');
+  const l=getActive();
+  if(l.teams.includes(val)) return showToast('Такая команда уже есть');
+  if(l.teams.length>=20) return showToast('Максимум 20 команд');
+  l.teams.push(val); input.value=''; save(); renderAll(); showToast('Команда добавлена');
+}
+function addTeamsBulk(){
+  const l=getActive();
+  const pools={
+    l1:['Ахмат','Оренбург','Факел','Пари НН'],
+    l2:['Нефтехимик','Кубань','Волгарь','Химки'],
+    l3:['Ленинградец','Звезда','Спартак Кострома','Форте'],
+    l4:['Пересвет','Сатурн','Знамя','Балашиха'],
+    l5:['Динамо U19','Урал U19','Рубин U19','Строгино U19']
+  };
+  const add = pools[l.id] || ['Команда А','Команда Б','Команда В','Команда Г'];
+  add.forEach(n=>{ if(!l.teams.includes(n) && l.teams.length<20) l.teams.push(n) });
+  save(); renderAll(); showToast('Добавлено 4 команды');
+}
+function clearTeams(){ if(!confirm('Очистить все команды в этой лиге?')) return; getActive().teams=[]; save(); renderAll(); }
+function shuffleTeams(){ const l=getActive(); for(let i=l.teams.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [l.teams[i],l.teams[j]]=[l.teams[j],l.teams[i]] } save(); renderAll(); showToast('Порядок перемешан'); }
+
+document.getElementById('newTeamInput').addEventListener('keydown', e=>{ if(e.key==='Enter') addTeam(); });
+
+function generateSchedule(){
+  const l=getActive();
+  if(l.teams.length<2) return showToast('Нужно минимум 2 команды');
+  if(l.teams.length<4) if(!confirm('Команд меньше 4 — всё равно сгенерировать?')) return;
+  const startDateVal=document.getElementById('startDate').value;
+  const startTimeVal=document.getElementById('startTime').value || '18:00';
+  const interval=parseInt(document.getElementById('interval').value,10);
+  const stadium=document.getElementById('defaultStadium').value.trim() || 'Главная арена';
+
+  const baseDate = startDateVal ? new Date(startDateVal+'T'+startTimeVal) : new Date();
+  const matches = roundRobin(l.teams, l.doubleRound);
+  // assign dates per round
+  matches.forEach(m=>{
+    const d=new Date(baseDate);
+    d.setDate(d.getDate() + (m.round-1)*interval);
+    // spread matches within round by 2 hours? keep same day but different time for demo
+    // add offset per match index inside round
+    const idxInRound = matches.filter(x=>x.round===m.round).indexOf(m);
+    // keep simple: same date if many matches same round
+    m.date = formatDateISO(d);
+    m.time = startTimeVal;
+    m.stadium = stadium;
+    m.status = 'scheduled';
+    m.score = null;
+    m.leagueId = l.id;
+  });
+  l.matches = matches;
+  save(); renderAll();
+  showToast(`Сгенерировано ${matches.length} матчей • ${Math.max(...matches.map(m=>m.round))} туров`);
+}
+
+function roundRobin(teamsInput, doubleRound){
+  let teams=[...teamsInput];
+  const isOdd = teams.length %2===1;
+  if(isOdd) teams.push('— выходной —');
+  const n=teams.length;
+  const rounds=n-1;
+  const half=n/2;
+  let arr=[...teams];
+  const schedule=[];
+  let id=1;
+  for(let r=0;r<rounds;r++){
+    for(let i=0;i<half;i++){
+      const home=arr[i];
+      const away=arr[n-1-i];
+      if(home==='— выходной —' || away==='— выходной —') continue;
+      // alternate home/away for fairness
+      const isSwap = (r%2===1) && (i===0);
+      schedule.push({
+        id: id++,
+        round: r+1,
+        home: isSwap? away: home,
+        away: isSwap? home: away,
+        date:'', time:'', stadium:'', status:'scheduled', score:null
+      });
+    }
+    // rotate except first
+    const fixed=arr[0];
+    const rest=arr.slice(1);
+    rest.unshift(rest.pop());
+    arr=[fixed, ...rest];
+  }
+  if(doubleRound){
+    const second=schedule.map(m=>({
+      id: id++,
+      round: m.round+rounds,
+      home: m.away,
+      away: m.home,
+      date:'', time:'', stadium:'', status:'scheduled', score:null
+    }));
+    return [...schedule, ...second];
+  }
+  return schedule;
+}
+
+function formatDateISO(d){
+  return d.toISOString().slice(0,10);
+}
+function formatDateRU(iso){
+  if(!iso) return '—';
+  const d=new Date(iso+'T12:00:00');
+  return d.toLocaleDateString('ru-RU', {day:'2-digit', month:'long', weekday:'short'});
+}
+
+function clearSchedule(){ const l=getActive(); if(l.matches.length===0) return; if(!confirm('Удалить всё расписание этой лиги?')) return; l.matches=[]; save(); renderAll(); showToast('Расписание очищено'); }
+
+function setView(v){ view=v; document.getElementById('btnTours').className = v==='tours' ? 'px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white' : 'px-4 py-2 rounded-xl font-bold text-sm bg-white border border-slate-200';
+  document.getElementById('btnList').className = v==='list' ? 'px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white' : 'px-4 py-2 rounded-xl font-bold text-sm bg-white border border-slate-200';
+  document.getElementById('btnTable').className = v==='table' ? 'px-4 py-2 rounded-xl font-bold text-sm bg-slate-900 text-white' : 'px-4 py-2 rounded-xl font-bold text-sm bg-white border border-slate-200';
+  renderSchedule();
+}
+
+function renderSchedule(){
+  const l=getActive();
+  const container=document.getElementById('scheduleContainer');
+  const toolbar=document.getElementById('scheduleToolbar');
+  const empty=document.getElementById('emptyState');
+  const tourFilter=document.getElementById('tourFilter');
+  const search=(document.getElementById('searchInput').value||'').toLowerCase();
+
+  // populate tour filter
+  const rounds = l.matches.length? [...new Set(l.matches.map(m=>m.round))].sort((a,b)=>a-b):[];
+  const currentFilter=tourFilter.value;
+  tourFilter.innerHTML='<option value="all">Все туры</option>' + rounds.map(r=>`<option value="${r}">Тур ${r}</option>`).join('');
+  if([...tourFilter.options].some(o=>o.value===currentFilter)) tourFilter.value=currentFilter;
+
+  if(l.matches.length===0){
+    toolbar.classList.add('hidden'); container.innerHTML=''; empty.classList.remove('hidden');
+    document.getElementById('standingsBlock').classList.add('hidden');
+    return;
+  }
+  toolbar.classList.remove('hidden'); empty.classList.add('hidden');
+  document.getElementById('standingsBlock').classList.remove('hidden');
+
+  let filtered = l.matches.slice();
+  if(tourFilter.value!=='all') filtered = filtered.filter(m=>String(m.round)===tourFilter.value);
+  if(search) filtered = filtered.filter(m=> (m.home+m.away+m.stadium+m.date).toLowerCase().includes(search));
+
+  if(filtered.length===0){
+    container.innerHTML='<div class="text-center py-10 text-slate-500">Ничего не найдено по запросу</div>';
+    return;
+  }
+
+  if(view==='table'){
+    container.innerHTML = `
+      <div class="overflow-auto rounded-2xl border border-slate-200">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-[11px] tracking-widest font-bold text-slate-500">
+            <tr><th class="px-3 py-3 text-left">Тур</th><th class="px-3 py-3 text-left">Дата</th><th class="px-3 py-3 text-left">Время</th><th class="px-3 py-3 text-left">Хозяева</th><th class="px-2"></th><th class="px-3 py-3 text-left">Гости</th><th class="px-3 py-3 text-left">Стадион</th><th class="px-3 py-3 text-left">Счёт</th><th></th></tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 bg-white">
+            ${filtered.sort((a,b)=> a.round-b.round || a.date.localeCompare(b.date)).map(m=>`
+              <tr class="hover:bg-slate-50">
+                <td class="px-3 py-3 font-bold">#${m.round}</td>
+                <td class="px-3 py-3 whitespace-nowrap">${formatDateRU(m.date)}</td>
+                <td class="px-3 py-3">${m.time}</td>
+                <td class="px-3 py-3 font-semibold">${escapeHtml(m.home)}</td>
+                <td class="text-slate-400">—</td>
+                <td class="px-3 py-3 font-semibold">${escapeHtml(m.away)}</td>
+                <td class="px-3 py-3 text-slate-600">${escapeHtml(m.stadium)}</td>
+                <td class="px-3 py-3">${m.score ? `<span class="bg-slate-900 text-white px-2 py-1 rounded-full font-bold text-xs">${m.score.home}:${m.score.away}</span>` : '<span class="text-xs text-slate-400">—</span>'}</td>
+                <td class="px-3 py-3"><button onclick="openEdit(${m.id})" class="text-xs font-bold bg-white border border-slate-200 px-3 py-1.5 rounded-full hover:bg-slate-50">✎</button></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+    return;
+  }
+
+  if(view==='list'){
+    container.innerHTML = `<div class="space-y-2">${filtered.sort((a,b)=> a.round-b.round || a.id-b.id).map(m=>matchCard(m, true)).join('')}</div>`;
+    return;
+  }
+
+  // tours view
+  const grouped={};
+  filtered.forEach(m=>{ (grouped[m.round]=grouped[m.round]||[]).push(m); });
+  const roundsSorted=Object.keys(grouped).map(Number).sort((a,b)=>a-b);
+  container.innerHTML = roundsSorted.map(r=>{
+    const matches=grouped[r];
+    const dateRU = matches[0]? formatDateRU(matches[0].date) : '';
+    return `
+      <div class="rounded-[20px] border border-slate-200 overflow-hidden bg-white">
+        <div class="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
+          <div class="flex items-center gap-3">
+            <span class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm">${r}</span>
+            <div>
+              <p class="font-extrabold text-sm">ТУР ${r}</p>
+              <p class="text-xs text-slate-500">${dateRU} • ${matches.length} матча</p>
+            </div>
+          </div>
+          <span class="hidden sm:inline-flex text-xs font-semibold bg-white border border-slate-200 px-3 py-1.5 rounded-full">${matches[0]?.date || ''} ${matches[0]?.time || ''}</span>
+        </div>
+        <div class="p-3 grid gap-2 bg-slate-50/50">
+          ${matches.map(m=>matchCard(m,false)).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function matchCard(m, showRound){
+  const score = m.score ? `${m.score.home}:${m.score.away}` : '— : —';
+  const statusColor = m.status==='finished' ? 'bg-emerald-600' : m.status==='live' ? 'bg-red-500' : 'bg-slate-900';
+  const statusText = m.status==='finished' ? 'СЫГРАН' : m.status==='live' ? 'LIVE' : 'ЗАПЛАНИРОВАН';
+  return `
+    <div class="bg-white border border-slate-200 rounded-2xl px-4 py-3 flex items-center gap-3 hover:border-slate-300 transition">
+      ${showRound? `<span class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black">${m.round}</span>` : ''}
+      <div class="hidden sm:block text-xs text-slate-500 min-w-[110px]">
+        <div class="font-semibold text-slate-700">${formatDateRU(m.date)}</div>
+        <div>${m.time} • ${escapeHtml(m.stadium)}</div>
+      </div>
+      <div class="flex-1 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
+        <div class="text-right font-bold text-sm leading-tight truncate">${escapeHtml(m.home)}</div>
+        <div class="flex flex-col items-center gap-1">
+          <span class="px-3 py-1 rounded-full ${m.score ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-600'} font-black text-xs tracking-widest">${score}</span>
+          <span class="text-[10px] tracking-widest font-bold px-2 py-0.5 rounded-full text-white ${statusColor}">${statusText}</span>
+        </div>
+        <div class="font-bold text-sm leading-tight truncate">${escapeHtml(m.away)}</div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button onclick="quickScore(${m.id})" title="Ввести счёт" class="w-8 h-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 flex items-center justify-center">⚽</button>
+        <button onclick="openEdit(${m.id})" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center">✎</button>
+      </div>
+    </div>
+    <div class="sm:hidden text-[11px] text-slate-500 px-1 -mt-1 mb-1">${formatDateRU(m.date)} • ${m.time} • ${escapeHtml(m.stadium)}</div>
+  `;
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m])); }
+
+function openEdit(id){
+  const l=getActive();
+  const m=l.matches.find(x=>x.id===id);
+  if(!m) return;
+  editing=m;
+  const modal=document.getElementById('matchModal');
+  const content=document.getElementById('modalContent');
+  content.innerHTML=`
+    <div class="grid grid-cols-2 gap-3">
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Тур</span><input id="eRound" type="number" value="${m.round}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"/></label>
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Статус</span><select id="eStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"><option value="scheduled" ${m.status==='scheduled'?'selected':''}>Запланирован</option><option value="live" ${m.status==='live'?'selected':''}>Live</option><option value="finished" ${m.status==='finished'?'selected':''}>Сыгран</option></select></label>
+    </div>
+    <div class="grid grid-cols-2 gap-3">
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Хозяева</span><input id="eHome" value="${escapeHtml(m.home)}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold"/></label>
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Гости</span><input id="eAway" value="${escapeHtml(m.away)}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold"/></label>
+    </div>
+    <div class="grid grid-cols-3 gap-3">
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Дата</span><input id="eDate" type="date" value="${m.date}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"/></label>
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Время</span><input id="eTime" type="time" value="${m.time}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"/></label>
+      <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Счёт</span><div class="flex gap-1"><input id="eScoreH" type="number" placeholder="0" value="${m.score?m.score.home:''}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"/><span class="py-2 font-bold">:</span><input id="eScoreA" type="number" placeholder="0" value="${m.score?m.score.away:''}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"/></div></label>
+    </div>
+    <label class="space-y-1"><span class="text-xs font-semibold text-slate-500">Стадион</span><input id="eStadium" value="${escapeHtml(m.stadium)}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm"/></label>
+    <div class="flex gap-2 pt-2">
+      <button onclick="deleteMatch(${m.id})" class="mr-auto text-sm font-semibold text-red-600 hover:text-red-700">🗑 Удалить матч</button>
+    </div>
+  `;
+  modal.classList.remove('hidden');
+}
+function closeModal(){ document.getElementById('matchModal').classList.add('hidden'); editing=null; }
+function saveMatch(){
+  if(!editing) return;
+  const eRound=parseInt(document.getElementById('eRound').value,10)||1;
+  const eHome=document.getElementById('eHome').value.trim()||editing.home;
+  const eAway=document.getElementById('eAway').value.trim()||editing.away;
+  const eDate=document.getElementById('eDate').value;
+  const eTime=document.getElementById('eTime').value;
+  const eStadium=document.getElementById('eStadium').value.trim();
+  const eStatus=document.getElementById('eStatus').value;
+  const sH=document.getElementById('eScoreH').value;
+  const sA=document.getElementById('eScoreA').value;
+  editing.round=eRound; editing.home=eHome; editing.away=eAway; editing.date=eDate; editing.time=eTime; editing.stadium=eStadium; editing.status=eStatus;
+  if(sH!=='' && sA!==''){ editing.score={home:parseInt(sH,10),away:parseInt(sA,10)}; editing.status='finished'; } else if(sH===''&&sA===''){ editing.score=null; }
+  save(); closeModal(); renderAll(); showToast('Матч сохранён');
+}
+function deleteMatch(id){
+  if(!confirm('Удалить матч?')) return;
+  const l=getActive(); l.matches=l.matches.filter(m=>m.id!==id); save(); closeModal(); renderAll(); showToast('Матч удалён');
+}
+function quickScore(id){
+  const l=getActive(); const m=l.matches.find(x=>x.id===id);
+  const h=prompt(`Счёт для ${m.home} — ${m.away}\nГолы хозяев:`, m.score?m.score.home:0);
+  if(h===null) return;
+  const a=prompt(`Голы гостей (${m.away}):`, m.score?m.score.away:0);
+  if(a===null) return;
+  m.score={home:parseInt(h,10)||0, away:parseInt(a,10)||0};
+  m.status='finished';
+  save(); renderAll(); showToast('Счёт сохранён');
+}
+
+function renderStandings(){
+  const l=getActive();
+  const tbody=document.getElementById('standingsBody');
+  const teams=l.teams;
+  const stats={};
+  teams.forEach(t=> stats[t]={team:t,pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});
+  l.matches.forEach(m=>{
+    if(!m.score || m.status!=='finished') return;
+    if(!stats[m.home]) stats[m.home]={team:m.home,pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+    if(!stats[m.away]) stats[m.away]={team:m.away,pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+    const sh=m.score.home, sa=m.score.away;
+    stats[m.home].pld++; stats[m.away].pld++;
+    stats[m.home].gf+=sh; stats[m.home].ga+=sa;
+    stats[m.away].gf+=sa; stats[m.away].ga+=sh;
+    if(sh>sa){ stats[m.home].w++; stats[m.home].pts+=3; stats[m.away].l++; }
+    else if(sh<sa){ stats[m.away].w++; stats[m.away].pts+=3; stats[m.home].l++; }
+    else { stats[m.home].d++; stats[m.away].d++; stats[m.home].pts+=1; stats[m.away].pts+=1; }
+  });
+  const rows=Object.values(stats).sort((a,b)=> b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf);
+  tbody.innerHTML=rows.map((r,i)=>`
+    <tr class="${i<3?'bg-emerald-50/50':''}">
+      <td class="px-4 py-2.5 font-bold">${i+1}</td>
+      <td class="px-2 py-2.5 font-semibold">${escapeHtml(r.team)}</td>
+      <td class="text-center py-2.5">${r.pld}</td>
+      <td class="text-center py-2.5 text-emerald-700 font-semibold">${r.w}</td>
+      <td class="text-center py-2.5">${r.d}</td>
+      <td class="text-center py-2.5 text-red-600">${r.l}</td>
+      <td class="text-center py-2.5">${r.gf}</td>
+      <td class="text-center py-2.5">${r.ga}</td>
+      <td class="text-center py-2.5 font-black">${r.pts}</td>
+    </tr>
+  `).join('');
+}
+
+function renderUpcoming(){
+  const el=document.getElementById('upcomingList');
+  let all=[];
+  leagues.forEach(l=>{
+    l.matches.filter(m=>m.status!=='finished').forEach(m=> all.push({...m, leagueName:l.name}));
+  });
+  all.sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  all=all.slice(0,8);
+  if(all.length===0){ el.innerHTML='<p class="text-sm text-slate-500 text-center py-6">Нет предстоящих матчей.<br>Сгенерируй расписание.</p>'; return; }
+  el.innerHTML=all.map(m=>`
+    <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+      <span class="text-[10px] font-bold tracking-widest bg-white border border-slate-200 px-2 py-1 rounded-full">${formatDateRU(m.date).split(',')[0]}</span>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-bold leading-none truncate">${escapeHtml(m.home)} — ${escapeHtml(m.away)}</p>
+        <p class="text-[11px] text-slate-500 truncate">${escapeHtml(m.leagueName)} • ${m.time}</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+function exportJSON(){
+  const dataStr=JSON.stringify(leagues,null,2);
+  download('mikhail-leagues-5.json', dataStr, 'application/json');
+  showToast('JSON экспортирован');
+}
+function exportCSV(){
+  let csv='Лига,Тур,Дата,Время,Хозяева,Гости,Стадион,Статус,Счёт\n';
+  leagues.forEach(l=>{
+    l.matches.forEach(m=>{
+      const score=m.score? `${m.score.home}:${m.score.away}`:'';
+      csv+= `"${l.name}",${m.round},${m.date},${m.time},"${m.home}","${m.away}","${m.stadium}",${m.status},"${score}"\n`;
+    });
+  });
+  download('mikhail-schedule-5-leagues.csv', csv, 'text/csv');
+  showToast('CSV экспортирован');
+}
+function download(filename, content, mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+}
+function resetAll(){
+  if(!confirm('Сбросить всё к демо-данным? Расписания и команды будут перезаписаны.')) return;
+  localStorage.removeItem('mikhail_leagues_v1');
+  leagues=JSON.parse(JSON.stringify(DEFAULT_LEAGUES));
+  activeId=leagues[0].id;
+  save(); renderAll(); showToast('Сброшено');
+}
+function generateAllLeagues(){
+  if(!confirm('Сгенерировать расписание сразу для всех 5 лиг? Текущие расписания будут перезаписаны.')) return;
+  const interval=parseInt(document.getElementById('interval').value,10) || 7;
+  const startDateVal=document.getElementById('startDate').value;
+  const startTimeVal=document.getElementById('startTime').value || '18:00';
+  const stadium=document.getElementById('defaultStadium').value.trim() || 'Главная арена';
+  const baseDate = startDateVal ? new Date(startDateVal+'T'+startTimeVal) : new Date();
+  leagues.forEach(l=>{
+    if(l.teams.length<2) return;
+    const matches=roundRobin(l.teams, l.doubleRound);
+    matches.forEach(m=>{
+      const d=new Date(baseDate); d.setDate(d.getDate() + (m.round-1)*interval);
+      m.date=formatDateISO(d); m.time=startTimeVal; m.stadium=stadium; m.status='scheduled'; m.score=null; m.leagueId=l.id;
+    });
+    l.matches=matches;
+  });
+  save(); renderAll(); showToast('Все 5 лиг сгенерированы');
+}
+function generateAllDemo(){
+  localStorage.removeItem('mikhail_leagues_v1');
+  leagues=JSON.parse(JSON.stringify(DEFAULT_LEAGUES));
+  activeId=leagues[0].id;
+  // force generate all
+  const base=new Date(); base.setDate(base.getDate()+3);
+  document.getElementById('startDate').valueAsDate=base;
+  document.getElementById('startTime').value='19:00';
+  document.getElementById('defaultStadium').value='Главная арена';
+  generateAllLeagues();
+}
+
+function renderAll(){ renderLeaguesList(); renderActive(); updateBadges(); }
+
+// init
+(function init(){
+  const d=new Date(); d.setDate(d.getDate()+7);
+  document.getElementById('startDate').valueAsDate=d;
+  renderAll();
+})();
+</script>
+</body>
+</html>

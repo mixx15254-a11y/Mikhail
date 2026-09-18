@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" role="img" aria-label="Эмблема ДФК «Победа»">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F0303C"/>
+      <stop offset="1" stop-color="#B0121D"/>
+    </linearGradient>
+  </defs>
+  <!-- outer shield -->
+  <path d="M60 3 L114 20 V70 C114 104 90 127 60 137 C30 127 6 104 6 70 V20 Z" fill="#0E1626"/>
+  <!-- inner shield -->
+  <path d="M60 10 L107 25 V70 C107 100 86 120 60 130 C34 120 13 100 13 70 V25 Z" fill="url(#shieldGrad)"/>
+  <!-- diagonal band -->
+  <path d="M13 44 L107 66 L107 80 L13 58 Z" fill="#FFFFFF" opacity="0.96"/>
+  <!-- star -->
+  <path d="M60 22 L64.7 34.2 L77.8 35 L67.6 43.4 L71 56 L60 48.9 L49 56 L52.4 43.4 L42.2 35 L55.3 34.2 Z" fill="#FFD34D"/>
+  <!-- football -->
+  <g transform="translate(60 97)">
+    <circle r="21" fill="#FFFFFF"/>
+    <path d="M0 -9 L8.6 -2.8 L5.3 7.3 L-5.3 7.3 L-8.6 -2.8 Z" fill="#0E1626"/>
+    <path d="M0 -9 L0 -21 M8.6 -2.8 L19 -6.5 M5.3 7.3 L12 17 M-5.3 7.3 L-12 17 M-8.6 -2.8 L-19 -6.5" stroke="#0E1626" stroke-width="2.6" fill="none"/>
+    <path d="M19 -6.5 A21 21 0 0 1 12 17 M12 17 A21 21 0 0 1 -12 17 M-12 17 A21 21 0 0 1 -19 -6.5 M-19 -6.5 A21 21 0 0 1 0 -21 M0 -21 A21 21 0 0 1 19 -6.5" stroke="#0E1626" stroke-width="0" fill="none"/>
+  </g>
+  <!-- 63 region -->
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="800" text-anchor="middle">
+    <text x="60" y="54" font-size="15" fill="#B0121D" letter-spacing="1">63</text>
+  </g>
+</svg>

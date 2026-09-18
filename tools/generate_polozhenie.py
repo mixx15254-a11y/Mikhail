@@ -583,9 +583,172 @@ def build_pdf():
     return PDF_PATH
 
 
+# ----------------------------------------------------------------------------
+# HTML (веб-версия: открывается в любом браузере, на телефоне и компьютере)
+# ----------------------------------------------------------------------------
+HTML_PATH = os.path.join(BASE, "index.html")
+LATIN_BASE = os.path.join(BASE, "Polozhenie_Futbolnye_Zvezdy_2012-2013_9x9_3-4_oktyabrya_2026")
+
+HTML_HEAD = """<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Положение о турнире «Футбольные звёзды» — девушки 2012–2013, 9×9, 3–4 октября, Самара</title>
+<style>
+  :root { --ink:#14181f; --muted:#5d6673; --line:#c8ced8; --accent:#0f5c3c; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#eef1f5; color:var(--ink);
+         font-family:"PT Serif","Times New Roman",Georgia,serif; }
+  .toolbar { position:sticky; top:0; z-index:10; background:#0f172a; color:#fff;
+             padding:10px 16px; display:flex; gap:14px; align-items:center;
+             flex-wrap:wrap; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+             font-size:14px; }
+  .toolbar b { font-weight:600; }
+  .toolbar a { color:#9fe6c0; text-decoration:none; border-bottom:1px dashed #9fe6c0; }
+  .toolbar a:hover { color:#fff; border-color:#fff; }
+  .sheet { max-width:860px; margin:22px auto 60px; background:#fff; padding:48px 56px;
+           box-shadow:0 2px 18px rgba(15,23,42,.12); border-radius:4px; }
+  h1.doc { text-align:center; font-size:27px; letter-spacing:2px; margin:10px 0 4px; }
+  .lead { text-align:center; font-weight:700; font-size:16.5px; margin:0 0 2px; }
+  h2 { font-size:17px; margin:26px 0 8px; }
+  h2.appendix { page-break-before:always; break-before:page; margin-top:34px; }
+  p { margin:0 0 9px; text-align:justify; font-size:15.5px; line-height:1.5; }
+  ul.plain { list-style:none; margin:0 0 10px; padding:0; }
+  ul.plain li { font-size:15.5px; line-height:1.5; margin:0 0 6px; padding-left:20px;
+                text-align:justify; position:relative; }
+  ul.plain li:before { content:"–"; position:absolute; left:4px; }
+  .approve { text-align:center; font-size:15px; line-height:1.45; margin-bottom:14px; }
+  .ph { background:#fff3b0; border-radius:2px; padding:0 2px; white-space:nowrap; }
+  .small { font-size:13.5px; color:var(--muted); }
+  table { border-collapse:collapse; width:100%; margin:8px 0 14px; font-size:13.5px; }
+  th, td { border:1px solid var(--line); padding:5px 6px; text-align:center; }
+  th { background:#eef2f7; font-weight:700; }
+  td.left, th.left { text-align:left; }
+  td.sign { border:none; text-align:left; padding:3px 0; font-size:15px; }
+  .rule { border:none; border-top:2px solid var(--accent); margin:16px 0 0; }
+  .toc { font-size:15px; columns:2; column-gap:28px; margin:6px 0 4px; }
+  .toc a { color:var(--accent); }
+  @media print {
+    body { background:#fff; }
+    .toolbar, .toc { display:none; }
+    .sheet { box-shadow:none; margin:0; padding:0; max-width:none; border-radius:0; }
+    h2 { page-break-after:avoid; break-after:avoid; }
+    table { page-break-inside:auto; }
+    tr { page-break-inside:avoid; }
+    @page { size:A4; margin:16mm 14mm; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <b>Положение о турнире «Футбольные звёзды» · 3–4 октября 2026 · Самара, ЦСК ВВС</b>
+  <a href="Polozhenie_Futbolnye_Zvezdy_2012-2013_9x9_3-4_oktyabrya_2026.pdf" download>Скачать PDF</a>
+  <a href="Polozhenie_Futbolnye_Zvezdy_2012-2013_9x9_3-4_oktyabrya_2026.docx" download>Скачать Word (DOCX)</a>
+  <a href="Polozhenie_Futbolnye_Zvezdy_2012-2013_9x9_3-4_oktyabrya_2026.md" download>Скачать текст (MD)</a>
+  <a href="#" onclick="window.print();return false;">Печать / сохранить в PDF</a>
+</div>
+<div class="sheet">
+"""
+
+HTML_TAIL = """
+</div>
+</body>
+</html>
+"""
+
+
+def build_html():
+    import html as _html
+
+    def esc(text):
+        return _html.escape(str(text))
+
+    def with_ph(text):
+        return re.sub(r"(_{3,})", r'<span class="ph">\1</span>', esc(text))
+
+    parts = []
+    appendix_no = 0
+    for kind, text in CONTENT:
+        if kind == "center":
+            parts.append(f'<div class="approve">{with_ph(text)}</div>')
+        elif kind == "pagebreak":
+            continue
+        elif kind == "title":
+            parts.append(f'<h1 class="doc">{esc(text)}</h1>')
+        elif kind == "subtitle":
+            parts.append(f'<div class="lead">{esc(text)}</div>')
+        elif kind == "h1":
+            if text.startswith("ПРИЛОЖЕНИЕ"):
+                appendix_no += 1
+                parts.append(f'<h2 class="appendix" id="p{appendix_no}">{esc(text)}</h2>')
+            else:
+                anchor = "s" + text.split(".")[0].strip()
+                parts.append(f'<h2 id="{anchor}">{esc(text)}</h2>')
+        elif kind == "p":
+            parts.append(f"<p>{with_ph(text)}</p>" if text else "")
+        elif kind == "small":
+            parts.append(f'<p class="small">{with_ph(text)}</p>')
+        elif kind == "bullet":
+            parts.append(f"<li>{with_ph(text)}</li>")
+        elif kind == "table":
+            rows = text
+            ncols = len(rows[0])
+            wide_left = (ncols == 3)
+            out = ["<table>"]
+            for ri, row in enumerate(rows):
+                tag = "th" if ri == 0 else "td"
+                cells = []
+                for ci, val in enumerate(row):
+                    cls = ""
+                    if ri == 0:
+                        cls = ' class="left"' if (wide_left and ci == 2) else ""
+                    elif wide_left:
+                        cls = ' class="left"' if ci == 2 else ""
+                    elif len(str(val)) > 30:
+                        cls = ' class="left"'
+                    cells.append(f"<{tag}{cls}>{with_ph(val)}</{tag}>")
+                out.append("<tr>" + "".join(cells) + "</tr>")
+            out.append("</table>")
+            parts.append("".join(out))
+
+    body = []
+    open_ul = False
+    for chunk in parts:
+        if chunk.startswith("<li>"):
+            if not open_ul:
+                body.append('<ul class="plain">')
+                open_ul = True
+            body.append(chunk)
+        else:
+            if open_ul:
+                body.append("</ul>")
+                open_ul = False
+            body.append(chunk)
+    if open_ul:
+        body.append("</ul>")
+
+    with open(HTML_PATH, "w", encoding="utf-8") as fh:
+        fh.write(HTML_HEAD + "\n".join(body) + HTML_TAIL)
+    return HTML_PATH
+
+
+def make_latin_copies():
+    import shutil
+    made = []
+    for src, ext in ((DOCX_PATH, ".docx"), (PDF_PATH, ".pdf"), (MD_PATH, ".md")):
+        dst = LATIN_BASE + ext
+        shutil.copyfile(src, dst)
+        made.append(dst)
+    return made
+
+
 if __name__ == "__main__":
     with open(MD_PATH, "w", encoding="utf-8") as fh:
         fh.write(build_markdown())
     print("OK:", MD_PATH)
     print("OK:", build_docx())
     print("OK:", build_pdf())
+    print("OK:", build_html())
+    for p in make_latin_copies():
+        print("OK:", p)

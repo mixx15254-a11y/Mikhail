@@ -66,7 +66,7 @@ LEAGUES=[
     {"name":"2016-2017 Высшая 5×5 — группы 5×4","format":"5*5","groups":5,"teams":[("Эверест 2","Пузырев"),("Профики-2","Беляев"),("Молот","Цыганов"),("Огонь 2","Анисимов"),("Школа 64/92","Тетерин"),("школа 16","Смолкин"),("Школа 1","Галимуллин"),("Огонь 3","Анисимов"),("Школа 139","Гурин"),("КС 26","Кузьмичев"),("Школа 1/2","Владимиров"),("Огонь 4","Анисимов"),("Профики","Беляев"),("Комета","Женя"),("Барсы","Седин"),("Огонь 5","Анисимов"),("Красная фурия 2","Касьянов"),("Олимп 2","Щадин"),("Дружба","Майоров"),("Эверест 3","Пузырев")],"double":False},
     {"name":"2018-2019 Премьер 5×5 — 2 круга","format":"5*5","teams":[("68 школа","Шкреба"),("Спутник-1","Агарков"),("Смена-Кошелев","Майоров"),("Комета","Женя"),("Молот","Цыганов"),("Акулы 42/11","Щадин"),("Красные опасные","Анисимов"),("Профики","Беляев")],"double":True},
     {"name":"2018-2019 Высшая 5×5 — 2 круга","format":"5*5","teams":[("Акулы 42/11","Щадин"),("Школа 64/92","Тетерин"),("Профики","Беляев"),("Школа 16","Смолкин"),("КС 26","Кузьмичев"),("Школа 1","Галимуллин"),("Школа 35","Колюжный"),("Дружба","Майоров"),("Красные опасные 2","Анисимов"),("Красные опасные 3","Анисимов")],"double":True},
-    {"name":"2020-2021 Предварительный 13 — 1 круг","format":"5*5","teams":[("68 школа","Шкреба"),("Спутник","Агарков"),("Киты 42/11","Щадин"),("Профики","Беляев"),("школа 76","Глинин"),("Молот (153/157)","Вукалов"),("Школа 1","Галимуллин"),("Барселона","Ботов"),("Крепыши","Анисимов"),("Крепыши 2","Анисимов"),("Крепыши 3","Анисимов"),("ЯнгФорс","Сусляев"),("Профики 2","Беляев")],"double":False},
+    {"name":"2020-2021 Предварительный 13 — 1 круг","format":"4*4","teams":[("68 школа","Шкреба"),("Спутник","Агарков"),("Киты 42/11","Щадин"),("Профики","Беляев"),("школа 76","Глинин"),("Молот (153/157)","Вукалов"),("Школа 1","Галимуллин"),("Барселона","Ботов"),("Крепыши","Анисимов"),("Крепыши 2","Анисимов"),("Крепыши 3","Анисимов"),("ЯнгФорс","Сусляев"),("Профики 2","Беляев")],"double":False},
 ]
 def build_matches():
     all_matches=[]
@@ -128,7 +128,8 @@ def schedule_per_time(all_matches, slots):
             best_idx=-1
             for idx,m in enumerate(remaining):
                 if field_slot["field_type"]!=m["format"]:
-                    if not (m["format"]=="5*5" and field_slot["field_type"]=="4*4"):
+                    # взаимозаменяемость 5×5 ↔ 4×4: меньший формат может играть на большем и наоборот (отмечено жёлтым)
+                    if not ((m["format"]=="5*5" and field_slot["field_type"]=="4*4") or (m["format"]=="4*4" and field_slot["field_type"]=="5*5")):
                         continue
                 if m["home_train"] in busy_here or m["away_train"] in busy_here:
                     continue
@@ -138,6 +139,7 @@ def schedule_per_time(all_matches, slots):
                 break
             if best:
                 # назначаем
+                is_fb = (best["format"]!=field_slot["field_type"])
                 scheduled.append({
                     "date":field_slot["date_str"],
                     "date_obj":field_slot["date_obj"],
@@ -153,7 +155,7 @@ def schedule_per_time(all_matches, slots):
                     "away_train":best["away_train"],
                     "round":best["round"],
                     "slot_key":tk,
-                    "is_fallback":(best["format"]=="5*5" and field_slot["field_type"]=="4*4")
+                    "is_fallback":is_fb
                 })
                 busy_here.add(best["home_train"])
                 busy_here.add(best["away_train"])
@@ -192,9 +194,9 @@ def main():
     ALT_FILL=PatternFill(start_color="F8FAFC", end_color="F8FAFC", fill_type="solid")
     thin=Side(style="thin", color="CBD5E1")
     BORDER=Border(left=thin,right=thin,top=thin,bottom=thin)
-    ws.merge_cells("A1:K1");ws["A1"].value="РАСПИСАНИЕ ОСЕНЬ 2 поля 7×7 везде — 60 мин/игра (2×25+5+5, для 2020: 2×20+5+15) — БЕЗ ПАРАЛЛЕЛЕЙ ТРЕНЕРОВ"
+    ws.merge_cells("A1:K1");ws["A1"].value="РАСПИСАНИЕ ТОЛЬКО НА ЭТИ 19 ДАТ (без января) — 2 поля 7×7 везде — 60 мин/игра — БЕЗ ПАРАЛЛЕЛЕЙ ТРЕНЕРОВ"
     ws["A1"].font=Font(bold=True,size=11,color="0F172A");ws["A1"].alignment=Alignment(horizontal="center")
-    ws.merge_cells("A2:K2");ws["A2"].value="26.08 17:30-20:30 2×7×7+3×5×5 • 27.08 10-13 2×7×7+2×5×5+3×4×4 • далее все даты 2×7×7 — 5×5 на 4×4 жёлтым • тренер не может быть в двух местах одновременно"
+    ws.merge_cells("A2:K2");ws["A2"].value="2020-2021 — формат 4×4 (отмечено) , может играть на 5×5 поле — жёлтым • 5×5↔4×4 взаимозаменяемы • 26.08 17:30-20:30 2×7×7+3×5×5 • 27.08 10-13 2×7×7+2×5×5+3×4×4 • продолжение в январе — даты пока неизвестны"
     ws["A2"].font=Font(size=8,italic=True,color="64748B");ws["A2"].alignment=Alignment(horizontal="center")
     headers=["Дата","День","Время","Поле","Формат","Лига","Группа","Хозяева","Тренер","Гости","Тренер"]
     for c,h in enumerate(headers,1):
@@ -220,14 +222,14 @@ def main():
     ws.freeze_panes="A5";ws.auto_filter.ref=f"A4:K{row-1}";ws.sheet_properties.pageSetUpPr.fitToPage=True;ws.page_setup.orientation="landscape";ws.page_setup.paperSize=ws.PAPERSIZE_A4;ws.page_setup.fitToWidth=1;ws.page_setup.fitToHeight=0
 
     ws2=wb.create_sheet("Сводка")
-    ws2["A1"].value="Сводка спортдиректора — 2×7×7 везде, 60 мин, без параллелей"
+    ws2["A1"].value="Сводка спортдиректора — ТОЛЬКО 19 ДАТ (без января) • 2020 как 4×4"
     ws2["A1"].font=Font(bold=True,size=12)
-    ws2["A3"].value=f"Запланировано: {len(scheduled)}"
-    ws2["A4"].value=f"Не влезло (нужны доп. даты): {len(remaining)}"
-    ws2["A5"].value=f"Конфликтов (реальных параллелей): {conflicts}"
+    ws2["A3"].value=f"Запланировано: {len(scheduled)} / {len(all_matches)} (7×7:{len([m for m in all_matches if m['format']=='7*7'])} 5×5:{len([m for m in all_matches if m['format']=='5*5'])} 4×4:{len([m for m in all_matches if m['format']=='4*4'])})"
+    ws2["A4"].value=f"Не влезло (нужны доп. даты/январь): {len(remaining)} (7×7:{len([m for m in remaining if m['format']=='7*7'])} 5×5:{len([m for m in remaining if m['format']=='5*5'])} 4×4:{len([m for m in remaining if m['format']=='4*4'])})"
+    ws2["A5"].value=f"Конфликтов (реальных параллелей): {conflicts} ✓"
     ws2["A5"].font=Font(color="16A34A",bold=True) if conflicts==0 else Font(color="DC2626",bold=True)
-    ws2["A7"].value="Слотов всего: 394 (136×7×7 +177×5×5 +81×4×4) — последовательных тайм-слотов 68"
-    ws2["A8"].value="Регламент: 2×25+5 перерыв между таймами +5 между матчами =60 мин; 2020: 2×20+5+15=60 мин"
+    ws2["A7"].value="Слотов всего ТОЛЬКО эти 19 дат: 394 (136×7×7 +177×5×5 +81×4×4) — последовательных тайм-слотов 68 — январь пока не известен"
+    ws2["A8"].value="Регламент: 2×25+5 перерыв между таймами +5 между матчами =60 мин; 2020-2021: 2×20+5 перерыв+15 между матчами =60 мин (формат 4×4 отмечено)"
     ws2["A9"].value="По датам (факт/ёмкость):"
     r=10
     cnt_date=Counter(s["date"] for s in scheduled)
@@ -246,9 +248,41 @@ def main():
     ws2.column_dimensions["A"].width=70
     ws2.column_dimensions["B"].width=18
     ws2.column_dimensions["C"].width=16
+
+    # Отдельный лист только 2020-2021 4×4 — для удобства (только эти 19 дат)
+    ws3=wb.create_sheet("Только_2020_4x4")
+    ws3.merge_cells("A1:K1"); ws3["A1"].value="2020-2021 Предварительный 13 — ТОЛЬКО формат 4×4 — только эти 19 дат (январь — продолжение)"
+    ws3["A1"].font=Font(bold=True,size=11,color="0F172A"); ws3["A1"].alignment=Alignment(horizontal="center")
+    ws3.merge_cells("A2:K2"); ws3["A2"].value="Регламент: 2×20+5 перерыв+15 между матчами =60 мин/игра — на поле 4×4 (может играть на 5×5 — жёлтым) — без параллелей тренеров"
+    ws3["A2"].font=Font(size=8,italic=True,color="64748B"); ws3["A2"].alignment=Alignment(horizontal="center")
+    for c,h in enumerate(headers,1):
+        cell=ws3.cell(row=4,column=c,value=h); cell.fill=HEADER_FILL; cell.font=HEADER_FONT; cell.alignment=Alignment(horizontal="center",vertical="center"); cell.border=BORDER
+    scheduled_2020=[s for s in scheduled_sorted if "2020" in s["league"]]
+    row=5
+    for sc in scheduled_2020:
+        dow=sc["date_obj"].strftime("%a"); dow={"Mon":"Пн","Tue":"Вт","Wed":"Ср","Thu":"Чт","Fri":"Пт","Sat":"Сб","Sun":"Вс"}.get(dow,dow)
+        vals=[sc["date"],dow,sc["time"],sc["field"],sc["format"],sc["league"],sc["group"],sc["home"],sc["home_train"],sc["away"],sc["away_train"]]
+        for c,v in enumerate(vals,1):
+            cell=ws3.cell(row=row,column=c,value=v)
+            cell.font=Font(size=8) if c not in (8,10) else Font(size=8,bold=True)
+            if c in (9,11): cell.font=Font(size=7,color="475569")
+            cell.alignment=Alignment(horizontal="center",vertical="center"); cell.border=BORDER
+            if sc.get("is_fallback"): cell.fill=PatternFill(start_color="FEF3C7",end_color="FEF3C7",fill_type="solid")
+        ws3.row_dimensions[row].height=15; row+=1
+    # пустые строки для оставшихся 2020 матчей
+    remaining_2020=[m for m in remaining if "2020" in m["league"]]
+    if remaining_2020:
+        ws3.cell(row=row+1,column=1,value=f"Не влезло 2020 на эти 19 дат — {len(remaining_2020)} матчей — уйдут в январь:"); ws3.cell(row=row+1,column=1).font=Font(bold=True,color="DC2626",size=9)
+        for i,m in enumerate(remaining_2020[:20], row+2):
+            ws3.cell(row=i,column=1,value=f"{m['home']} — {m['away']} ({m['home_train']}/{m['away_train']})"); ws3.cell(row=i,column=1).font=Font(size=8)
+    for i,w in enumerate(widths,1): ws3.column_dimensions[openpyxl.utils.get_column_letter(i)].width=w
+    ws3.freeze_panes="A5"; ws3.auto_filter.ref=f"A4:K{row-1}" if row>5 else "A4:K4"; ws3.sheet_properties.pageSetUpPr.fitToPage=True; ws3.page_setup.orientation="landscape"; ws3.page_setup.paperSize=ws3.PAPERSIZE_A4; ws3.page_setup.fitToWidth=1; ws3.page_setup.fitToHeight=0
+
     wb.save("Raspisanie_Bez_Paralleley.xlsx")
     wb.save("Raspisanie_2x7x7_60min_Bez_Paralleley.xlsx")
-    print("Saved Raspisanie_Bez_Paralleley.xlsx и Raspisanie_2x7x7_60min_Bez_Paralleley.xlsx")
+    # отдельный файл только 19 дат
+    wb.save("Raspisanie_TOLKO_19dat_2020_4x4.xlsx")
+    print("Saved Raspisanie_Bez_Paralleley.xlsx, Raspisanie_2x7x7_60min_Bez_Paralleley.xlsx и Raspisanie_TOLKO_19dat_2020_4x4.xlsx — только эти 19 дат, 2020 как 4×4")
 
 if __name__=="__main__":
     main()

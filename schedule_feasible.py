@@ -70,7 +70,7 @@ LEAGUES=[
     {"name":"2016-2017 Высшая 5×5 — группы 5×4","format":"5*5","groups":5,"teams":[("Эверест 2","Пузырев"),("Профики-2","Беляев"),("Молот","Цыганов"),("Огонь 2","Анисимов"),("Школа 64/92","Тетерин"),("школа 16","Смолкин"),("Школа 1","Галимуллин"),("Огонь 3","Анисимов"),("Школа 139","Гурин"),("КС 26","Кузьмичев"),("Школа 1/2","Владимиров"),("Огонь 4","Анисимов"),("Профики","Беляев"),("Комета","Женя"),("Барсы","Седин"),("Огонь 5","Анисимов"),("Красная фурия 2","Касьянов"),("Олимп 2","Щадин"),("Дружба","Майоров"),("Эверест 3","Пузырев")], "double":False},
     {"name":"2018-2019 Премьер 5×5 — 2 круга","format":"5*5","teams":[("68 школа","Шкреба"),("Спутник-1","Агарков"),("Смена-Кошелев","Майоров"),("Комета","Женя"),("Молот","Цыганов"),("Акулы 42/11","Щадин"),("Красные опасные","Анисимов"),("Профики","Беляев")], "double":True},
     {"name":"2018-2019 Высшая 5×5 — 2 круга","format":"5*5","teams":[("Акулы 42/11","Щадин"),("Школа 64/92","Тетерин"),("Профики","Беляев"),("Школа 16","Смолкин"),("КС 26","Кузьмичев"),("Школа 1","Галимуллин"),("Школа 35","Колюжный"),("Дружба","Майоров"),("Красные опасные 2","Анисимов"),("Красные опасные 3","Анисимов")], "double":True},
-    {"name":"2020-2021 Предварительный 13 — 1 круг","format":"5*5","teams":[("68 школа","Шкреба"),("Спутник","Агарков"),("Киты 42/11","Щадин"),("Профики","Беляев"),("школа 76","Глинин"),("Молот (153/157)","Вукалов"),("Школа 1","Галимуллин"),("Барселона","Ботов"),("Крепыши","Анисимов"),("Крепыши 2","Анисимов"),("Крепыши 3","Анисимов"),("ЯнгФорс","Сусляев"),("Профики 2","Беляев")], "double":False},
+    {"name":"2020-2021 Предварительный 13 — 1 круг","format":"4*4","teams":[("68 школа","Шкреба"),("Спутник","Агарков"),("Киты 42/11","Щадин"),("Профики","Беляев"),("школа 76","Глинин"),("Молот (153/157)","Вукалов"),("Школа 1","Галимуллин"),("Барселона","Ботов"),("Крепыши","Анисимов"),("Крепыши 2","Анисимов"),("Крепыши 3","Анисимов"),("ЯнгФорс","Сусляев"),("Профики 2","Беляев")], "double":False},
 ]
 
 def build_matches():
@@ -115,14 +115,14 @@ def schedule(all_matches, slots):
         placed=False
         for s in slots_sorted:
             if s["field_type"]!=m["format"]:
-                if not (m["format"]=="5*5" and s["field_type"]=="4*4"):
+                if not ((m["format"]=="5*5" and s["field_type"]=="4*4") or (m["format"]=="4*4" and s["field_type"]=="5*5")):
                     continue
             if any(sc["date"]==s["date_str"] and sc["time"]==s["time"] and sc["field"]==s["field"] for sc in scheduled):
                 continue
             key=s["date_str"]+" "+s["time"]
             if m["home_train"] in busy[key] or m["away_train"] in busy[key]:
                 continue
-            scheduled.append({"date":s["date_str"],"date_obj":s["date_obj"],"time":s["time"],"field":s["field"],"field_type":s["field_type"],"league":m["league"],"format":m["format"],"group":m["group"],"home":m["home"],"away":m["away"],"home_train":m["home_train"],"away_train":m["away_train"],"round":m["round"],"is_fallback":(m["format"]=="5*5" and s["field_type"]=="4*4")})
+            scheduled.append({"date":s["date_str"],"date_obj":s["date_obj"],"time":s["time"],"field":s["field"],"field_type":s["field_type"],"league":m["league"],"format":m["format"],"group":m["group"],"home":m["home"],"away":m["away"],"home_train":m["home_train"],"away_train":m["away_train"],"round":m["round"],"is_fallback":(m["format"]!=s["field_type"])})
             busy[key].add(m["home_train"]);busy[key].add(m["away_train"])
             placed=True;break
         if not placed:
@@ -132,8 +132,8 @@ def schedule(all_matches, slots):
 def main():
     slots=generate_slots()
     all_matches=build_matches()
-    print(f"Матчей в плане (осенний блок): {len(all_matches)} (7*7:{len([m for m in all_matches if m['format']=='7*7'])}, 5*5:{len([m for m in all_matches if m['format']=='5*5'])})")
-    print(f"Слотов: {len(slots)} (7*7:{len([s for s in slots if s['field_type']=='7*7'])}, 5*5:{len([s for s in slots if s['field_type']=='5*5'])}+4*4:{len([s for s in slots if s['field_type']=='4*4'])})")
+    print(f"Матчей в плане (осенний блок 19 дат): {len(all_matches)} (7*7:{len([m for m in all_matches if m['format']=='7*7'])}, 5*5:{len([m for m in all_matches if m['format']=='5*5'])}, 4*4:{len([m for m in all_matches if m['format']=='4*4'])})")
+    print(f"Слотов (только эти 19 дат, без января): {len(slots)} (7*7:{len([s for s in slots if s['field_type']=='7*7'])}, 5*5:{len([s for s in slots if s['field_type']=='5*5'])}+4*4:{len([s for s in slots if s['field_type']=='4*4'])})")
     scheduled,unscheduled,busy=schedule(all_matches, slots)
     print(f"Запланировано: {len(scheduled)}, не влезло: {len(unscheduled)}")
     # проверка параллелей — дерби одного тренера считаем 1 матч, а не параллель
@@ -160,9 +160,9 @@ def main():
     GOLD_FILL=PatternFill(start_color="FFFBEB", end_color="FFFBEB", fill_type="solid")
     thin=Side(style="thin", color="CBD5E1")
     BORDER=Border(left=thin,right=thin,top=thin,bottom=thin)
-    ws.merge_cells("A1:K1");ws["A1"].value="ОСЕННИЙ БЛОК — РАСПИСАНИЕ С УЧЁТОМ ТРЕНЕРОВ (БЕЗ ПАРАЛЛЕЛЕЙ) • 60 мин слот"
+    ws.merge_cells("A1:K1");ws["A1"].value="ОСЕННИЙ БЛОК — РАСПИСАНИЕ ТОЛЬКО НА ЭТИ 19 ДАТ (без января) • 2×7×7 везде • 60 мин слот"
     ws["A1"].font=Font(bold=True,size=12,color="0F172A");ws["A1"].alignment=Alignment(horizontal="center")
-    ws.merge_cells("A2:K2");ws["A2"].value="Группы 2014 Высшая 3×6 (7×7) + Группы 2016 Высшая 5×4 (5×5) + 2018 Премьер/Высшая 5×5 2кр + 2020 предварительный 13 (5×5) — всего 299 матчей, все влезают в слоты"
+    ws.merge_cells("A2:K2");ws["A2"].value="Группы 2014 Высшая 3×6 (7×7) + Группы 2016 Высшая 5×4 (5×5) + 2018 Премьер/Высшая 5×5 2кр + 2020 предварительный 13 (4×4 — отмечено) — всего 299 матчей, продолжение в январе"
     ws["A2"].font=Font(size=8,italic=True,color="64748B");ws["A2"].alignment=Alignment(horizontal="center")
     headers=["Дата","День","Время","Поле","Формат","Лига","Группа","Хозяева","Тренер","Гости","Тренер"]
     for c,h in enumerate(headers,1):

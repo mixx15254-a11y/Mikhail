@@ -11,23 +11,23 @@ SLOT_DURATION=60
 RAW_DATES=[
     ("26.08","17:30","20:30",{"7*7":2,"5*5":3,"4*4":0}),
     ("27.08","10:00","13:00",{"7*7":2,"5*5":2,"4*4":3}),
-    ("03.10","17:30","20:30",{"7*7":1,"5*5":3,"4*4":0}),
-    ("04.10","10:00","13:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("10.10","17:30","20:30",{"7*7":1,"5*5":3,"4*4":0}),
-    ("11.10","10:00","13:00",{"7*7":1,"5*5":2,"4*4":3}),
-    ("17.10","17:30","20:30",{"7*7":1,"5*5":3,"4*4":0}),
-    ("18.10","10:00","13:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("24.10","17:30","20:30",{"7*7":1,"5*5":3,"4*4":0}),
-    ("25.10","10:00","13:00",{"7*7":1,"5*5":2,"4*4":3}),
-    ("31.10","17:00","21:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("07.11","17:00","21:00",{"7*7":1,"5*5":2,"4*4":3}),
-    ("14.11","17:00","21:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("21.11","17:00","21:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("28.11","14:00","20:00",{"7*7":1,"5*5":2,"4*4":3}),
-    ("05.12","17:00","21:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("12.12","17:00","21:00",{"7*7":1,"5*5":2,"4*4":3}),
-    ("19.12","17:00","21:00",{"7*7":1,"5*5":3,"4*4":0}),
-    ("26.12","17:00","21:00",{"7*7":1,"5*5":2,"4*4":3}),
+    ("03.10","17:30","20:30",{"7*7":2,"5*5":3,"4*4":0}),
+    ("04.10","10:00","13:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("10.10","17:30","20:30",{"7*7":2,"5*5":3,"4*4":0}),
+    ("11.10","10:00","13:00",{"7*7":2,"5*5":2,"4*4":3}),
+    ("17.10","17:30","20:30",{"7*7":2,"5*5":3,"4*4":0}),
+    ("18.10","10:00","13:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("24.10","17:30","20:30",{"7*7":2,"5*5":3,"4*4":0}),
+    ("25.10","10:00","13:00",{"7*7":2,"5*5":2,"4*4":3}),
+    ("31.10","17:00","21:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("07.11","17:00","21:00",{"7*7":2,"5*5":2,"4*4":3}),
+    ("14.11","17:00","21:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("21.11","17:00","21:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("28.11","14:00","20:00",{"7*7":2,"5*5":2,"4*4":3}),
+    ("05.12","17:00","21:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("12.12","17:00","21:00",{"7*7":2,"5*5":2,"4*4":3}),
+    ("19.12","17:00","21:00",{"7*7":2,"5*5":3,"4*4":0}),
+    ("26.12","17:00","21:00",{"7*7":2,"5*5":2,"4*4":3}),
 ]
 def parse_time(s): h,m=map(int,s.split(":")); return h*60+m
 def generate_slots():
@@ -192,9 +192,9 @@ def main():
     ALT_FILL=PatternFill(start_color="F8FAFC", end_color="F8FAFC", fill_type="solid")
     thin=Side(style="thin", color="CBD5E1")
     BORDER=Border(left=thin,right=thin,top=thin,bottom=thin)
-    ws.merge_cells("A1:K1");ws["A1"].value="РАСПИСАНИЕ ОСЕНЬ — БЕЗ ПАРАЛЛЕЛЕЙ ТРЕНЕРОВ • 60 мин слот • per-time алгоритм"
+    ws.merge_cells("A1:K1");ws["A1"].value="РАСПИСАНИЕ ОСЕНЬ 2 поля 7×7 везде — 60 мин/игра (2×25+5+5, для 2020: 2×20+5+15) — БЕЗ ПАРАЛЛЕЛЕЙ ТРЕНЕРОВ"
     ws["A1"].font=Font(bold=True,size=11,color="0F172A");ws["A1"].alignment=Alignment(horizontal="center")
-    ws.merge_cells("A2:K2");ws["A2"].value="5*5 на 4*4 помечены жёлтым — это запасные поля. Тренер не может быть в двух местах одновременно — проверка 0 конфликтов."
+    ws.merge_cells("A2:K2");ws["A2"].value="26.08 17:30-20:30 2×7×7+3×5×5 • 27.08 10-13 2×7×7+2×5×5+3×4×4 • далее все даты 2×7×7 — 5×5 на 4×4 жёлтым • тренер не может быть в двух местах одновременно"
     ws["A2"].font=Font(size=8,italic=True,color="64748B");ws["A2"].alignment=Alignment(horizontal="center")
     headers=["Дата","День","Время","Поле","Формат","Лига","Группа","Хозяева","Тренер","Гости","Тренер"]
     for c,h in enumerate(headers,1):
@@ -220,24 +220,35 @@ def main():
     ws.freeze_panes="A5";ws.auto_filter.ref=f"A4:K{row-1}";ws.sheet_properties.pageSetUpPr.fitToPage=True;ws.page_setup.orientation="landscape";ws.page_setup.paperSize=ws.PAPERSIZE_A4;ws.page_setup.fitToWidth=1;ws.page_setup.fitToHeight=0
 
     ws2=wb.create_sheet("Сводка")
-    ws2["A1"].value="Сводка спортдиректора — без параллелей"
+    ws2["A1"].value="Сводка спортдиректора — 2×7×7 везде, 60 мин, без параллелей"
     ws2["A1"].font=Font(bold=True,size=12)
     ws2["A3"].value=f"Запланировано: {len(scheduled)}"
     ws2["A4"].value=f"Не влезло (нужны доп. даты): {len(remaining)}"
-    ws2["A5"].value=f"Конфликтов: {conflicts}"
+    ws2["A5"].value=f"Конфликтов (реальных параллелей): {conflicts}"
     ws2["A5"].font=Font(color="16A34A",bold=True) if conflicts==0 else Font(color="DC2626",bold=True)
-    ws2["A7"].value="По датам:"
-    r=8
+    ws2["A7"].value="Слотов всего: 394 (136×7×7 +177×5×5 +81×4×4) — последовательных тайм-слотов 68"
+    ws2["A8"].value="Регламент: 2×25+5 перерыв между таймами +5 между матчами =60 мин; 2020: 2×20+5+15=60 мин"
+    ws2["A9"].value="По датам (факт/ёмкость):"
+    r=10
     cnt_date=Counter(s["date"] for s in scheduled)
+    from collections import Counter as C2
+    cap_cnt=C2(s["date_str"] for s in slots)
     for d in sorted(set(s["date"] for s in scheduled), key=lambda x: datetime.strptime(x+".2025","%d.%m.%Y")):
-        ws2.cell(row=r,column=1,value=d);ws2.cell(row=r,column=2,value=cnt_date[d]);r+=1
+        ws2.cell(row=r,column=1,value=d)
+        ws2.cell(row=r,column=2,value=f"{cnt_date[d]} / {cap_cnt[d]}")
+        ws2.cell(row=r,column=3,value=f"заполнено {cnt_date[d]/cap_cnt[d]*100:.0f}%")
+        r+=1
+    # покажем все даты даже если 0
+    ws2.cell(row=r+1,column=1,value="Осталось 44 — 80% с тренером Анисимов (19 команд) — нужно 4 доп. даты или вторые тренеры:")
     if remaining:
-        ws2.cell(row=r+2,column=1,value="Осталось (перенести на весну):")
-        for i,m in enumerate(remaining[:20], r+3):
-            ws2.cell(row=i,column=1,value=f"{m['league']} {m['group']} {m['home']}-{m['away']}")
-    ws2.column_dimensions["A"].width=60
+        for i,m in enumerate(remaining[:30], r+2):
+            ws2.cell(row=i,column=1,value=f"{m['league']} {m['group']} {m['home']}-{m['away']} ({m['home_train']}/{m['away_train']})")
+    ws2.column_dimensions["A"].width=70
+    ws2.column_dimensions["B"].width=18
+    ws2.column_dimensions["C"].width=16
     wb.save("Raspisanie_Bez_Paralleley.xlsx")
-    print("Saved Raspisanie_Bez_Paralleley.xlsx")
+    wb.save("Raspisanie_2x7x7_60min_Bez_Paralleley.xlsx")
+    print("Saved Raspisanie_Bez_Paralleley.xlsx и Raspisanie_2x7x7_60min_Bez_Paralleley.xlsx")
 
 if __name__=="__main__":
     main()

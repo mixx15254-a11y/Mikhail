@@ -209,7 +209,7 @@ const SEASONS = [
   {
     id:'s1213', name:'2012-2013', format:'7×7', note:'7×7',
     leagues:[
-      { id:'l1213', name:'2012-2013 • 7×7', season:'2012-2013', format:'7×7', status:'active', doubleRound:true,
+      { id:'l1213', name:'2012-2013 • 7×7 — 2 КРУГА', season:'2012-2013', format:'7×7', status:'active', doubleRound:true, stage:'2 круга — каждый с каждым дома/в гостях',
         teams:[
           {name:'Школа 68', trainer:'Шкреба'},
           {name:'Крылья-школа №7', trainer:'Уразаков'},
@@ -234,7 +234,7 @@ const SEASONS = [
   {
     id:'s1415', name:'2014-2015', format:'7×7', note:'Две лиги • 7×7',
     leagues:[
-      { id:'l1415p', name:'2014-2015 ПРЕМЬЕР-ЛИГА (7×7)', season:'2014-2015', format:'7×7', status:'active', doubleRound:true,
+      { id:'l1415p', name:'2014-2015 ПРЕМЬЕР-ЛИГА (7×7) — 2 КРУГА', season:'2014-2015', format:'7×7', status:'active', doubleRound:true, stage:'2 круга',
         teams:[
           {name:'Крылья-школа №7', trainer:'Уразаков'},
           {name:'Смена-Кошелев', trainer:'Майоров'},
@@ -246,7 +246,7 @@ const SEASONS = [
           {name:'Орлы', trainer:'Анисимов'},
         ], matches:[]
       },
-      { id:'l1415v', name:'2014-2015 ВЫСШАЯ ЛИГА (7×7) — 3 ГРУППЫ × 6', season:'2014-2015', format:'7×7', status:'draft', doubleRound:false, groups:3, group_names:['Группа A','Группа B','Группа C'],
+      { id:'l1415v', name:'2014-2015 ВЫСШАЯ ЛИГА (7×7) — 3 ГРУППЫ × 6 + ЗОЛОТО/СЕРЕБРО', season:'2014-2015', format:'7×7', status:'draft', doubleRound:false, groups:3, group_names:['Группа A','Группа B','Группа C'], stage:'Группы 3×6 → Золотая (1-3 места) 1 круг / Серебряная (4-6) 1 круг', second_stage:{gold:{name:'ЗОЛОТАЯ ЛИГА — 1-3 места групп (9 команд)', spots:["1A","2A","3A","1B","2B","3B","1C","2C","3C"]}, silver:{name:'СЕРЕБРЯНАЯ ЛИГА — 4-6 места групп (9 команд)', spots:["4A","5A","6A","4B","5B","6B","4C","5C","6C"]}}, second_start:'2014-11-02',
         teams:[
           {name:'68 школа', trainer:'Шкреба'},
           {name:'Школа 64/92', trainer:'Тетерин'},
@@ -273,7 +273,7 @@ const SEASONS = [
   {
     id:'s1617', name:'2016-2017', format:'7×7 / 5×5', note:'Премьер 7×7 + Высшая 5×5',
     leagues:[
-      { id:'l1617p', name:'2016-2017 ПРЕМЬЕР-ЛИГА (7×7)', season:'2016-2017', format:'7×7', status:'active', doubleRound:true,
+      { id:'l1617p', name:'2016-2017 ПРЕМЬЕР-ЛИГА (7×7) — 2 КРУГА', season:'2016-2017', format:'7×7', status:'active', doubleRound:true, stage:'2 круга',
         teams:[
           {name:'68 школа', trainer:'Шкреба'},
           {name:'Школа 175/96', trainer:'Лысиков'},
@@ -289,7 +289,7 @@ const SEASONS = [
           {name:'ФШМ', trainer:'Винокуров'},
         ], matches:[]
       },
-      { id:'l1617v', name:'2016-2017 ВЫСШАЯ ЛИГА (5×5) — 5 ГРУПП × 4', season:'2016-2017', format:'5×5', status:'draft', doubleRound:false, groups:5, group_names:['Группа A','Группа B','Группа C','Группа D','Группа E'],
+      { id:'l1617v', name:'2016-2017 ВЫСШАЯ ЛИГА (5×5) — 5 ГРУПП ×4 + ЗОЛОТО/СЕРЕБРО', season:'2016-2017', format:'5×5', status:'draft', doubleRound:false, groups:5, group_names:['Группа A','Группа B','Группа C','Группа D','Группа E'], stage:'Группы 5×4 → Золотая (1-2 места) 1 круг / Серебряная (3-4) 1 круг', second_stage:{gold:{name:'ЗОЛОТАЯ ЛИГА — 1-2 места групп (10 команд)', spots:["1A","2A","1B","2B","1C","2C","1D","2D","1E","2E"]}, silver:{name:'СЕРЕБРЯНАЯ ЛИГА — 3-4 места групп (10 команд)', spots:["3A","4A","3B","4B","3C","4C","3D","4D","3E","4E"]}}, second_start:'2016-10-23',
         teams:[
           {name:'Эверест 2', trainer:'Пузырев'},
           {name:'Профики-2', trainer:'Беляев'},
@@ -316,9 +316,9 @@ const SEASONS = [
     ]
   },
   {
-    id:'s1819', name:'2018-2019', format:'5×5', note:'Группы 5×5',
+    id:'s1819', name:'2018-2019', format:'5×5 • 2 круга', note:'Обе лиги — 2 круга',
     leagues:[
-      { id:'l1819p', name:'2018-2019 ПРЕМЬЕР-ЛИГА (5×5)', season:'2018-2019', format:'5×5', status:'active', doubleRound:true,
+      { id:'l1819p', name:'2018-2019 ПРЕМЬЕР-ЛИГА (5×5) — 2 КРУГА', season:'2018-2019', format:'5×5', status:'active', doubleRound:true, stage:'2 круга',
         teams:[
           {name:'68 школа', trainer:'Шкреба'},
           {name:'Спутник-1', trainer:'Агарков'},
@@ -330,7 +330,7 @@ const SEASONS = [
           {name:'Профики', trainer:'Беляев'},
         ], matches:[]
       },
-      { id:'l1819v', name:'2018-2019 ВЫСШАЯ ЛИГА (5×5)', season:'2018-2019', format:'5×5', status:'draft', doubleRound:false,
+      { id:'l1819v', name:'2018-2019 ВЫСШАЯ ЛИГА (5×5) — 2 КРУГА', season:'2018-2019', format:'5×5', status:'draft', doubleRound:true, stage:'2 круга',
         teams:[
           {name:'Акулы 42/11', trainer:'Щадин'},
           {name:'Школа 64/92', trainer:'Тетерин'},
@@ -347,9 +347,9 @@ const SEASONS = [
     ]
   },
   {
-    id:'s2021', name:'2020-2021', format:'—', note:'Архив',
+    id:'s2021', name:'2020-2021', format:'5×5 • 1 круг + finals', note:'1 круг + Золото/Серебро',
     leagues:[
-      { id:'l2021', name:'2020-2021 (13 команд)', season:'2020-2021', format:'5×5', status:'draft', doubleRound:false,
+      { id:'l2021', name:'2020-2021 — 1 КРУГ + ЗОЛОТО(1-6)/СЕРЕБРО(7-13)', season:'2020-2021', format:'5×5', status:'draft', doubleRound:false, stage:'1 круг → Золотая (1-6) 1 круг / Серебряная (7-13) 1 круг', second_stage:{gold:{name:'ЗОЛОТАЯ ЛИГА — 1-6 места (6 команд)', spots:["1 место","2 место","3 место","4 место","5 место","6 место"]}, silver:{name:'СЕРЕБРЯНАЯ ЛИГА — 7-13 места (7 команд)', spots:["7 место","8 место","9 место","10 место","11 место","12 место","13 место"]}}, second_start:'2020-11-28',
         teams:[
           {name:'68 школа', trainer:'Шкреба'},
           {name:'Спутник', trainer:'Агарков'},
@@ -594,19 +594,40 @@ function generateForLeague(l){
   const interval=parseInt(document.getElementById('interval').value,10);
   const stadium=document.getElementById('defaultStadium').value.trim()||'Главная арена';
   const baseDate = startDateVal ? new Date(startDateVal+'T'+startTimeVal) : new Date();
+  let all=[];
   if(l.groups){
     const groups = groupsOfLeague(l);
-    let all=[]; let gid=1;
+    let gid=1;
     groups.forEach((g, idx)=>{
       const gname = (l.group_names && l.group_names[idx]) || ('Группа '+String.fromCharCode(65+idx));
       const names=g.map(t=>t.name);
       const sched=roundRobin(names, l.doubleRound);
       sched.forEach(m=>{
         const d=new Date(baseDate); d.setDate(d.getDate() + (m.round-1)*interval);
-        m.date=formatDateISO(d); m.time=startTimeVal; m.stadium=stadium+' ('+gname+')'; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.group=gname; m.gid=gid++;
+        m.date=formatDateISO(d); m.time=startTimeVal; m.stadium=stadium+' ('+gname+')'; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.group=gname; m.stage='Группы'; m.gid=gid++;
       });
       all = all.concat(sched);
     });
+    // второй этап Золото/Серебро
+    if(l.second_stage){
+      const secondBase = l.second_start ? new Date(l.second_start+'T'+startTimeVal) : new Date(baseDate.getTime() + 60*24*60*60*1000);
+      // Золотая
+      const goldSpots=l.second_stage.gold.spots;
+      const goldSched=roundRobin(goldSpots, false);
+      goldSched.forEach(m=>{
+        const d=new Date(secondBase); d.setDate(d.getDate() + (m.round-1)*7);
+        m.date=formatDateISO(d); m.time=startTimeVal; m.stadium='Главная арена (Золото)'; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.group='ЗОЛОТАЯ ЛИГА'; m.stage='Золото'; m.gid=all.length+1000+m.id;
+      });
+      all = all.concat(goldSched);
+      const silverBase = new Date(secondBase.getTime() + (Math.max(...goldSched.map(m=>m.round))+1)*7*24*60*60*1000);
+      const silverSpots=l.second_stage.silver.spots;
+      const silverSched=roundRobin(silverSpots, false);
+      silverSched.forEach(m=>{
+        const d=new Date(silverBase); d.setDate(d.getDate() + (m.round-1)*7);
+        m.date=formatDateISO(d); m.time=startTimeVal; m.stadium='Главная арена (Серебро)'; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.group='СЕРЕБРЯНАЯ ЛИГА'; m.stage='Серебро'; m.gid=all.length+2000+m.id;
+      });
+      all = all.concat(silverSched);
+    }
     l.matches=all;
     return all.length;
   } else {
@@ -614,10 +635,29 @@ function generateForLeague(l){
     const matches=roundRobin(names, l.doubleRound);
     matches.forEach(m=>{
       const d=new Date(baseDate); d.setDate(d.getDate() + (m.round-1)*interval);
-      m.date=formatDateISO(d); m.time=startTimeVal; m.stadium=stadium; m.status='scheduled'; m.score=null; m.leagueId=l.id;
+      m.date=formatDateISO(d); m.time=startTimeVal; m.stadium=stadium; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.stage='Основа'; m.group='';
     });
-    l.matches=matches;
-    return matches.length;
+    let all2=matches;
+    if(l.second_stage){
+      const secondBase = l.second_start ? new Date(l.second_start+'T'+startTimeVal) : new Date(baseDate.getTime() + (Math.max(...matches.map(m=>m.round))+1)*interval*24*60*60*1000);
+      const goldSpots=l.second_stage.gold.spots;
+      const goldSched=roundRobin(goldSpots, false);
+      goldSched.forEach(m=>{
+        const d=new Date(secondBase); d.setDate(d.getDate() + (m.round-1)*7);
+        m.date=formatDateISO(d); m.time=startTimeVal; m.stadium='Главная арена (Золото)'; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.group='ЗОЛОТАЯ ЛИГА'; m.stage='Золото';
+      });
+      all2 = all2.concat(goldSched);
+      const silverBase = new Date(secondBase.getTime() + (Math.max(...goldSched.map(m=>m.round))+1)*7*24*60*60*1000);
+      const silverSpots=l.second_stage.silver.spots;
+      const silverSched=roundRobin(silverSpots, false);
+      silverSched.forEach(m=>{
+        const d=new Date(silverBase); d.setDate(d.getDate() + (m.round-1)*7);
+        m.date=formatDateISO(d); m.time=startTimeVal; m.stadium='Главная арена (Серебро)'; m.status='scheduled'; m.score=null; m.leagueId=l.id; m.group='СЕРЕБРЯНАЯ ЛИГА'; m.stage='Серебро';
+      });
+      all2 = all2.concat(silverSched);
+    }
+    l.matches=all2;
+    return all2.length;
   }
 }
 function generateActive(){
@@ -674,8 +714,14 @@ function renderSchedule(){
 
   const rounds=[...new Set(l.matches.map(m=>m.round))].sort((a,b)=>a-b);
   const current=tourFilter.value;
-  if(l.groups){
-    tourFilter.innerHTML='<option value="all">Все группы и туры</option>'+rounds.map(r=>`<option value="${r}">Тур ${r}</option>`).join('')+(l.group_names? l.group_names.map(g=>`<option value="g:${g}">${g}</option>`).join(''):'');
+  const uniqGroups=[...new Set(l.matches.map(m=>m.group).filter(Boolean))];
+  if(l.groups || uniqGroups.length){
+    let opts='<option value="all">Все группы и туры</option>'+rounds.map(r=>`<option value="${r}">Тур ${r}</option>`).join('');
+    // группы из конфига
+    if(l.group_names) opts+=l.group_names.map(g=>`<option value="g:${g}">${g}</option>`).join('');
+    // золото/серебро и любые другие группы из матчей
+    uniqGroups.forEach(g=>{ if(l.group_names && l.group_names.includes(g)) return; if(g) opts+=`<option value="g:${g}">${g}</option>`; });
+    tourFilter.innerHTML=opts;
   } else {
     tourFilter.innerHTML='<option value="all">Все туры</option>'+rounds.map(r=>`<option value="${r}">Тур ${r}</option>`).join('');
   }
@@ -756,7 +802,11 @@ function matchCard(m, showRound){
   const score=m.score? `${m.score.home}:${m.score.away}` : '— : —';
   const statusColor=m.status==='finished'?'bg-emerald-600':m.status==='live'?'bg-red-500':'bg-slate-900';
   const statusText=m.status==='finished'?'СЫГРАН':m.status==='live'?'LIVE':'ЗАПЛАНИРОВАН';
-  const groupBadge = m.group ? `<span class="text-[10px] font-black tracking-widest bg-slate-900 text-white px-2 py-0.5 rounded-full">${escapeHtml(m.group)}</span>` : '';
+  let badgeClass='bg-slate-900 text-white';
+  if(m.group && m.group.includes('ЗОЛОТ')) badgeClass='bg-amber-500 text-white';
+  else if(m.group && m.group.includes('СЕРЕБР')) badgeClass='bg-slate-500 text-white';
+  else if(m.group && m.group.includes('Группа')) badgeClass='bg-slate-900 text-white';
+  const groupBadge = m.group ? `<span class="text-[10px] font-black tracking-widest ${badgeClass} px-2 py-0.5 rounded-full">${escapeHtml(m.group)}</span>` : '';
   return `<div class="bg-white border border-slate-200 rounded-2xl px-4 py-3 flex items-center gap-3 hover:border-slate-300">
     ${groupBadge}
     ${showRound?`<span class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-black">${m.round}</span>`:''}
@@ -815,8 +865,82 @@ function quickScore(id){ const l=getActive(); const m=l.matches.find(x=>x.id===i
 
 function renderStandings(){
   const l=getActive(); const container=document.getElementById('standingsBlock');
+  // если есть второй этап — показываем золото/серебро отдельно
+  if(l.second_stage){
+    const groups = l.groups ? groupsOfLeague(l) : null;
+    let html='';
+    if(groups){
+      groups.forEach((g, gi)=>{
+        const gname=(l.group_names&&l.group_names[gi])||('Группа '+String.fromCharCode(65+gi));
+        const teamNames=g.map(t=>t.name);
+        const stats={}; teamNames.forEach(n=>{ const t=g.find(x=>x.name===n); stats[n]={team:n, trainer:t? t.trainer:'', pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0}; });
+        l.matches.filter(m=>m.group===gname).forEach(m=>{
+          if(!m.score||m.status!=='finished') return;
+          if(!stats[m.home]) stats[m.home]={team:m.home, trainer:trainerOf(m.home), pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+          if(!stats[m.away]) stats[m.away]={team:m.away, trainer:trainerOf(m.away), pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+          const sh=m.score.home, sa=m.score.away;
+          stats[m.home].pld++; stats[m.away].pld++; stats[m.home].gf+=sh; stats[m.home].ga+=sa; stats[m.away].gf+=sa; stats[m.away].ga+=sh;
+          if(sh>sa){ stats[m.home].w++; stats[m.home].pts+=3; stats[m.away].l++; }
+          else if(sh<sa){ stats[m.away].w++; stats[m.away].pts+=3; stats[m.home].l++; }
+          else { stats[m.home].d++; stats[m.away].d++; stats[m.home].pts+=1; stats[m.away].pts+=1; }
+        });
+        const rows=Object.values(stats).sort((a,b)=> b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf);
+        const colors=['bg-blue-600','bg-emerald-600','bg-violet-600','bg-amber-600','bg-slate-900'];
+        const col=colors[gi%colors.length];
+        html+=`<div class="mt-4">
+          <div class="flex items-center gap-2 mb-2"><span class="px-3 py-1 rounded-full text-xs font-black text-white ${col}">${gname}</span><span class="text-xs text-slate-500">${g.length} команды • ${l.matches.filter(m=>m.group===gname).length} матчей</span></div>
+          <div class="overflow-auto rounded-xl border border-slate-200"><table class="w-full text-sm"><thead class="bg-slate-50 text-[11px] tracking-widest font-bold text-slate-500"><tr><th class="text-left px-3 py-2">#</th><th class="text-left px-2 py-2">Команда</th><th class="text-left px-2 py-2 hidden sm:table-cell">Тренер</th><th class="px-2 py-2">И</th><th class="px-2 py-2">В</th><th class="px-2 py-2">Н</th><th class="px-2 py-2">П</th><th class="px-2 py-2">ГЗ</th><th class="px-2 py-2">ГП</th><th class="px-2 py-2">О</th></tr></thead><tbody class="divide-y divide-slate-100 bg-white">${rows.map((r,i)=>`<tr class="${i<2?'bg-emerald-50/50':''}"><td class="px-3 py-2 font-bold">${i+1}</td><td class="px-2 py-2 font-semibold">${escapeHtml(r.team)}</td><td class="px-2 py-2 hidden sm:table-cell text-xs text-slate-500">${escapeHtml(r.trainer||'—')}</td><td class="text-center py-2">${r.pld}</td><td class="text-center text-emerald-700 font-semibold">${r.w}</td><td class="text-center">${r.d}</td><td class="text-center text-red-600">${r.l}</td><td class="text-center">${r.gf}</td><td class="text-center">${r.ga}</td><td class="text-center font-black">${r.pts}</td></tr>`).join('')}</tbody></table></div>
+        </div>`;
+      });
+    }
+    // для лиг без групп (2020-2021) — показываем таблицу предварительного этапа
+    if(!groups){
+      const stats={}; l.teams.forEach(t=> stats[t.name]={team:t.name, trainer:t.trainer, pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});
+      l.matches.filter(m=>!m.group || m.group==='' || m.stage==='Основа').forEach(m=>{
+        if(!m.score||m.status!=='finished') return;
+        if(!stats[m.home]) stats[m.home]={team:m.home, trainer:trainerOf(m.home), pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+        if(!stats[m.away]) stats[m.away]={team:m.away, trainer:trainerOf(m.away), pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+        const sh=m.score.home, sa=m.score.away;
+        stats[m.home].pld++; stats[m.away].pld++; stats[m.home].gf+=sh; stats[m.home].ga+=sa; stats[m.away].gf+=sa; stats[m.away].ga+=sh;
+        if(sh>sa){ stats[m.home].w++; stats[m.home].pts+=3; stats[m.away].l++; }
+        else if(sh<sa){ stats[m.away].w++; stats[m.away].pts+=3; stats[m.home].l++; }
+        else { stats[m.home].d++; stats[m.away].d++; stats[m.home].pts+=1; stats[m.away].pts+=1; }
+      });
+      const rows=Object.values(stats).sort((a,b)=> b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf);
+      html+=`<div class="mt-4">
+        <div class="flex items-center gap-2 mb-2"><span class="px-3 py-1 rounded-full text-xs font-black text-white bg-slate-900">ПРЕДВАРИТЕЛЬНЫЙ ЭТАП — 13 команд</span><span class="text-xs text-slate-500">${l.matches.filter(m=>!m.group || m.stage==='Основа').length} матчей • 1 круг</span></div>
+        <div class="overflow-auto rounded-xl border border-slate-200"><table class="w-full text-sm"><thead class="bg-slate-50 text-[11px] tracking-widest font-bold text-slate-500"><tr><th class="text-left px-3 py-2">#</th><th class="text-left px-2 py-2">Команда</th><th class="text-left px-2 py-2 hidden sm:table-cell">Тренер</th><th class="px-2 py-2">И</th><th class="px-2 py-2">В</th><th class="px-2 py-2">Н</th><th class="px-2 py-2">П</th><th class="px-2 py-2">О</th></tr></thead><tbody class="divide-y divide-slate-100 bg-white">${rows.map((r,i)=>`<tr class="${i<6?'bg-amber-50/50': i>=6?'bg-slate-50':''}"><td class="px-3 py-2 font-bold">${i+1} ${i<6?'<span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded-full">ЗОЛОТО</span>':'<span class="text-[10px] bg-slate-500 text-white px-1.5 py-0.5 rounded-full">СЕРЕБРО</span>'}</td><td class="px-2 py-2 font-semibold">${escapeHtml(r.team)}</td><td class="px-2 py-2 hidden sm:table-cell text-xs text-slate-500">${escapeHtml(r.trainer||'—')}</td><td class="text-center py-2">${r.pld}</td><td class="text-center text-emerald-700 font-semibold">${r.w}</td><td class="text-center">${r.d}</td><td class="text-center text-red-600">${r.l}</td><td class="text-center font-black">${r.pts}</td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+    }
+    // золото и серебро таблицы
+    ['gold','silver'].forEach(key=>{
+      const sec=l.second_stage[key];
+      const spots=sec.spots;
+      const gname=sec.name.split('—')[0].trim();
+      const badge = key==='gold' ? 'bg-amber-500' : 'bg-slate-500';
+      const stats={}; spots.forEach(s=> stats[s]={team:s, trainer:'', pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0});
+      l.matches.filter(m=>m.group===gname || m.group===gname.replace(' ','' ) || (m.group && m.group.includes(key==='gold'?'ЗОЛОТ':'СЕРЕБР'))).forEach(m=>{
+        if(!m.score||m.status!=='finished') return;
+        if(!stats[m.home]) stats[m.home]={team:m.home, trainer:'', pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+        if(!stats[m.away]) stats[m.away]={team:m.away, trainer:'', pld:0,w:0,d:0,l:0,gf:0,ga:0,pts:0};
+        const sh=m.score.home, sa=m.score.away;
+        stats[m.home].pld++; stats[m.away].pld++; stats[m.home].gf+=sh; stats[m.home].ga+=sa; stats[m.away].gf+=sa; stats[m.away].ga+=sh;
+        if(sh>sa){ stats[m.home].w++; stats[m.home].pts+=3; stats[m.away].l++; }
+        else if(sh<sa){ stats[m.away].w++; stats[m.away].pts+=3; stats[m.home].l++; }
+        else { stats[m.home].d++; stats[m.away].d++; stats[m.home].pts+=1; stats[m.away].pts+=1; }
+      });
+      const rows=Object.values(stats).sort((a,b)=> b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf);
+      html+=`<div class="mt-6">
+        <div class="flex items-center gap-2 mb-2"><span class="px-3 py-1 rounded-full text-xs font-black text-white ${badge}">${gname}</span><span class="text-xs text-slate-500">${spots.length} команд • ${spots.join(', ')}</span></div>
+        <div class="overflow-auto rounded-xl border ${key==='gold'?'border-amber-200':'border-slate-200'}"><table class="w-full text-sm"><thead class="${key==='gold'?'bg-amber-50':'bg-slate-50'} text-[11px] tracking-widest font-bold text-slate-500"><tr><th class="text-left px-3 py-2">#</th><th class="text-left px-2 py-2">Место/Слот</th><th class="px-2 py-2">И</th><th class="px-2 py-2">В</th><th class="px-2 py-2">Н</th><th class="px-2 py-2">П</th><th class="px-2 py-2">О</th></tr></thead><tbody class="divide-y divide-slate-100 bg-white">${rows.map((r,i)=>`<tr class="${i<3? (key==='gold'?'bg-amber-50/50':'bg-slate-50'):''}"><td class="px-3 py-2 font-bold">${i+1}</td><td class="px-2 py-2 font-semibold">${escapeHtml(r.team)}</td><td class="text-center py-2">${r.pld}</td><td class="text-center text-emerald-700 font-semibold">${r.w}</td><td class="text-center">${r.d}</td><td class="text-center text-red-600">${r.l}</td><td class="text-center font-black">${r.pts}</td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+    });
+    const block=document.getElementById('standingsBlock');
+    block.innerHTML=`<div class="flex items-center justify-between"><h3 class="font-extrabold text-[12px] tracking-[0.12em] text-slate-500">ТУРНИРНЫЕ ТАБЛИЦЫ — ГРУППЫ + ЗОЛОТО/СЕРЕБРО</h3><span class="text-xs text-slate-500">по группам и финалам</span></div>${html}<p class="text-xs text-slate-500 mt-3">После группового этапа впиши реальные команды вместо слотов 1A,2A... — таблицы пересчитаются.</p>`;
+    return;
+  }
   if(l.groups){
-    // grouped standings
+    // grouped standings без второго этапа (старый путь, но уже покрыт выше)
     const groups=groupsOfLeague(l);
     let html='';
     groups.forEach((g, gi)=>{
